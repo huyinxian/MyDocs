@@ -1,0 +1,171 @@
+## **说明** ##
+> 本文仅供个人学习与参考，不用于其他用途
+
+这里只是个人练习，并不是基础教程，基础教程请去各类慕课网。Unity3D 小案例与练习的代码我会统一发到[GitHub](https://github.com/huyinxian/Unity3D-Practice)。
+
+!> 场景名是与章节名称对应的，脚本代码同样也附上了前缀，如果没有的话就代表我没写或者直接写成了一个文件。
+
+## **1 MonoBehavior** ##
+?> 生命周期函数请看我的博客：[Unity3D学习笔记（2）——脚本基础](http://fantasticmiao.cn/2018/04/14/U3D-note-02/)
+
+这里提一句，关于<code>OnEnable()</code>，每一个脚本都有一个名为<code>enabled</code>的开关，如图：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/01.png)
+
+脚本名字旁边本应该有一个勾，不过因为我删掉了所有的生命周期函数，所以<code>enabled</code>就没有意义了。
+
+## **2 UnityGUI** ##
+?> 详细解析请看博客：[Unity3D学习笔记（4）——GUI基础](http://fantasticmiao.cn/2018/05/08/U3D-note-04/)
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/02.png)
+
+## **3 调试** ##
+一般使用下面这三个接口向控制台输出信息：
+* <code>Debug.Log</code>：普通信息
+* <code>Debug.Log</code>：警告信息
+* <code>Debug.Log</code>：错误信息
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/03.png)
+
+## **4 游戏对象的操作** ##
+
+### 4.1 创建游戏对象 ###
+生成两个按钮，分别是创建立方体和创建球体。下面介绍本例中用到的几个函数：
+* <code>GameObject.CreatePrimitive()</code>：创建一个游戏对象并将它指定为一个 Unity 自带的模型
+* <code>AddComponent()</code>：给游戏对象添加一个组件。如果添加的组件依赖于其他组件，那么依赖的组件会自动添加
+* <code>renderer.material.color</code>：修改渲染材质的颜色
+* <code>transform.position</code>：设置游戏对象的世界坐标。如要设置局部坐标可以使用<code>transform.localPosition</code>
+
+### 4.2 获取游戏对象 ###
+获取游戏对象有两种：一种是在代码里面声明公共变量，然后在<code>Inspector</code>窗口中指定游戏对象；另一种是通过对象名称获取对象。
+
+对于第一种，被声明为<code>public</code>的变量会在脚本的属性栏中出现，可以用已存在的游戏对象为其赋值。
+
+对于第二种，可以在代码中使用<code>GameObject.Find(String name)</code>，该方法会寻找到当前场景中所有名为 name 的对象。
+
+### 4.3 添加组件与修改组件 ###
+获取游戏组件使用<code>GetComponent()</code>，添加组件使用<code>AddComponent()</code>。
+
+### 4.4 发送消息 ###
+游戏对象之间可以使用广播传递消息，这里主要用到下面这个方法：
+
+```csharp
+/**
+ * 第一个参数是消息的名称，所有脚本中与该名称同名的方法都会被调用
+ * 第二个参数是向该方法传递的参数
+ * 第三个参数是是否必须有接收方法的选项，一般不要求接收方法
+**/
+GameObject.SendMessage(String methodName, object value = null, SendMessageOptions options = SendMessageOptions.RequireReceiver)
+```
+
+当游戏对象调用该方法时，那么该游戏对象上的所有 MonoBehavior 脚本都会接收到消息。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/06.png)
+
+### 4.5 克隆游戏对象 ###
+制作一个预制体，然后使用如下方法：
+
+```csharp
+GameObject obj = Instantiate(prefab) as GameObject;
+```
+
+如此就可以在代码中动态地生成预制体
+
+## **5 移动、旋转和缩放游戏对象** ##
+任何一个游戏对象在创建时都会附带<code>Transform</code>组件（无法删除），其三维坐标保存在<code>Vector3</code>容器中。
+
+### 5.1 移动游戏对象 ###
+如果要在原有位置的基础上移动，可以使用<code>transform.Translate()</code>方法，其相当于：
+
+```csharp
+// offset是位移
+transform.position = transform.position + offset
+```
+
+### 5.2 缩放游戏对象 ###
+
+```csharp
+// 在x、y、z轴方向上缩放
+transform.localScale = new Vector3(x, y, z);
+
+// 整体缩放
+transform.localScale *= 2f;
+```
+
+### 5.3 旋转游戏对象 ###
+旋转有两种，一种是自传，还有一种是围绕某个点或对象旋转。这里列举几个常用的方法：
+* <code>transform.Rotate()</code>：自转
+* <code>transform.RotateAround()</code>：围绕某个对象或点旋转
+* <code>Time.deltaTime</code>：上一帧消耗的时间，可用作旋转的速度系数
+* <code>Vector3.left</code>：x轴负方向
+* <code>Vector3.right</code>：x轴正方向
+* <code>Vector3.up</code>：y轴正方向
+* <code>Vector3.down</code>：y轴负方向
+
+## **6 工具类** ##
+
+### 6.1 时间类 ###
+* <code>Time.time</code>：游戏的总运行时间，受<code>Time.timeScale</code>影响，游戏暂停时该时间停止
+* <code>Time.timeScale</code>：时间流逝速度。如果设置为<code>2f</code>，则代表游戏时间的流速是现实世界时间的两倍
+* <code>Time.deltaTime</code>：上一帧消耗的时间
+* <code>Time.fixedTime</code>：执行一次<code>FixedUpdate()</code>的时间间隔，可在<code>Edit -> Project Settings -> Time</code>设置
+* <code>Time.fixedDeltaTime</code>：固定更新上一帧所消耗的时间
+* <code>Time.realtimeSinceStartup</code>：从游戏开始到现在的真实时间，不受<code>Time.timeScale</code>影响，游戏暂停仍然继续计时
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/11.png)
+
+### 6.2 随机数 ###
+<code>Random.Range(a, b)</code>会生成一个在<code>a~b</code>之间的数，a、b 可为整数和浮点数
+
+### 6.3 数学类 ###
+?> 详情请转到——[Mathf](https://docs.unity3d.com/2017.4/Documentation/ScriptReference/Mathf.html)
+
+### 6.4 四元数 ###
+Untiy 中的模型旋转是通过四元数实现的，如果我们想要直接修改<code>transform.rotation</code>，那就必须要用到四元数。生成四元数的方法为<code>Quaternion.Euler(Vector3 vec)</code>，传入的参数<code>Vector3</code>代表绕 x、y、z 轴旋转的角度，返回的值为该角度对应的四元数。
+
+关于四元数的介绍，我会在博客中更新。
+
+## **7 输入控制** ##
+?> 详情请转到——[Input](https://docs.unity3d.com/2017.4/Documentation/ScriptReference/Input.html)，我这里只介绍一下自定义的按键。
+
+按照<code>Edit -> Project Settings -> Input</code>打开输入设置界面：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/12.png)
+
+Untiy 提供了默认的输入设置，比如<code>Horizontal</code>横向移动、<code>Vertical</code>纵向移动等。默认设置中会出现重复的值，比如有两个<code>Horizontal</code>，分别对应键盘和手柄。
+
+下面我来解释一下各项参数的意思：
+
+| 参数 | 说明 |
+| :--- | :--- |
+| Name | 名字 |
+| Descriptive Name | 控制设置中显示的正值名称 |
+| Descriptive Negative Name | 控制设置中显示的负值名称 |
+| Negative Button | 该按钮用于负方向移动轴 |
+| Positive Button | 该按钮用于正方向移动轴 |
+| Alt Negative Button | 备选按钮用于负方向移动轴 |
+| Alt Positive Button | 备选按钮用于正方向移动轴 |
+| Gravity | 当没有相关按钮按下时，速度回归到 0 |
+| Dead | 模拟的死区大小，设定范围内所有模拟设备的值为 0 |
+| Sensitivity | 灵敏度，单位/秒，用于数码设备 |
+| Snap | 启用时，当按下相反方向的按钮，该轴值将重设为 0 |
+| Invert | 启用时，负按钮将提供正值，正按钮亦然 |
+| Type | 控制轴的输入设备类型 |
+| Axis | 连接设备的轴将控制该轴 |
+| Joy Num | 连接操纵杆将控制该轴 |
+
+在<code>Horizontal</code>中，方向键左、右、A、D都被识别为横向移动，也就是说当键盘读取到这四个键时，都会被视作横向移动，输出值在<code>-1~1</code>。<code>Gravity</code>的值为<code>3</code>，也就是当松开对应的按钮时，输出值将会以<code>3/秒</code>的速度归零。
+
+<code>Dead</code>填写<code>0.001</code>表示当输出在<code>-0.001~0.001</code>之间时会忽略不计，强制输出 0。<code>Sensitivity</code>表示当按下对应按钮时，输出值会以<code>3/秒</code>的速度变化，也就是迅速达到 -1 或 1。
+
+<code>Type</code>一栏中设置的是<code>Key or Mouse Button</code>，也就是说该设置只对应键鼠。<code>Axis</code>设置的是 X 轴，所以方向键左和 A 将控制 X 轴负方向，方向键右和 D 控制 X 轴正方向。
+
+想要获取轴的值也很简单：
+
+```csharp
+float x = Input.GetAxis("Horizontal");
+```
+
+这样，x 就代表了横向上的移动，无需再通过 Input.KeyCode() 获取。
+
+?> 更多的输入接口还是请查看[官方文档](https://docs.unity3d.com/2017.4/Documentation/ScriptReference/index.html)，这里只是简单地介绍一部分。
