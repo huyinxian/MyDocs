@@ -115,7 +115,7 @@ transform.localScale *= 2f;
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/11.png)
 
 ### 6.2 随机数 ###
-<code>Random.Range(a, b)</code>会生成一个在<code>a~b</code>之间的数，a、b 可为整数和浮点数
+<code>Random.Range(a, b)</code>会生成一个在<code>a~b</code>之间的数（不包含最大值），a、b 可为整数和浮点数。
 
 ### 6.3 数学类 ###
 ?> 详情请转到——[Mathf](https://docs.unity3d.com/2017.4/Documentation/ScriptReference/Mathf.html)
