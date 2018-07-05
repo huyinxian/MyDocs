@@ -6,6 +6,7 @@
 !> 场景名是与章节名称对应的，脚本代码同样也附上了前缀，如果没有的话就代表我没写或者直接写成了一个文件。
 
 ## 1 MonoBehavior ##
+---------
 ?> 生命周期函数请看我的博客：[Unity3D学习笔记（2）——脚本基础](http://fantasticmiao.cn/2018/04/14/U3D-note-02/)
 
 这里提一句，关于<code>OnEnable()</code>，每一个脚本都有一个名为<code>enabled</code>的开关，如图：
@@ -15,11 +16,13 @@
 脚本名字旁边本应该有一个勾，不过因为我删掉了所有的生命周期函数，所以<code>enabled</code>就没有意义了。
 
 ## 2 UnityGUI ##
+---------
 ?> 详细解析请看博客：[Unity3D学习笔记（4）——GUI基础](http://fantasticmiao.cn/2018/05/08/U3D-note-04/)
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/02.png)
 
 ## 3 调试 ##
+---------
 一般使用下面这三个接口向控制台输出信息：
 * <code>Debug.Log</code>：普通信息
 * <code>Debug.Log</code>：警告信息
@@ -28,6 +31,7 @@
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/Practice%20Scipts/03.png)
 
 ## 4 游戏对象的操作 ##
+---------
 
 ### 4.1 创建游戏对象 ###
 生成两个按钮，分别是创建立方体和创建球体。下面介绍本例中用到的几个函数：
@@ -72,6 +76,7 @@ GameObject obj = Instantiate(prefab) as GameObject;
 如此就可以在代码中动态地生成预制体
 
 ## 5 移动、旋转和缩放游戏对象 ##
+---------
 任何一个游戏对象在创建时都会附带<code>Transform</code>组件（无法删除），其三维坐标保存在<code>Vector3</code>容器中。
 
 ### 5.1 移动游戏对象 ###
@@ -103,6 +108,7 @@ transform.localScale *= 2f;
 * <code>Vector3.down</code>：y轴负方向
 
 ## 6 工具类 ##
+---------
 
 ### 6.1 时间类 ###
 * <code>Time.time</code>：游戏的总运行时间，受<code>Time.timeScale</code>影响，游戏暂停时该时间停止
@@ -126,6 +132,7 @@ Untiy 中的模型旋转是通过四元数实现的，如果我们想要直接�
 关于四元数的介绍，我会在博客中更新。
 
 ## 7 输入控制 ##
+---------
 ?> 详情请转到——[Input](https://docs.unity3d.com/2017.4/Documentation/ScriptReference/Input.html)，我这里只介绍一下自定义的按键。
 
 按照<code>Edit -> Project Settings -> Input</code>打开输入设置界面：
