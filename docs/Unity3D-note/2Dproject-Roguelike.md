@@ -280,3 +280,5 @@ public class Loader : MonoBehaviour
 ```
 
 因为游戏是关卡形式的，为了方便加载，<code>GameManager</code>和<code>SoundManager</code>都被做成了预制体，且都是单例。
+
+## 游戏角色逻辑
