@@ -161,4 +161,37 @@ GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quater
 instance.transform.SetParent (boardHolder);
 ```
 
+我在这里要说明一下，<code>boardHolder</code>是一个空对象，实例化的对象都存储在这个空对象中，以免层次结构混乱。（不过我看了一下，官方的源码中似乎只把地板和围墙加入了 boardHolder）
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/16.png)
+
 官方源码为了减少重复的部分，将部分功能写成了方法，比如<code>RandomPosition()</code>是用来获取一个随机的位置；<code>LayoutObjectAtRandom()</code>是根据传入的集合随机选取一个预制体进行实例化，并且能够设置物体数量的范围，增加了关卡的随机性。
+
+最后就是整个关卡的初始化方法<code>SetupScene()</code>，这个方法会在<code>GameManager</code>中调用。
+
+```csharp
+// SetupScene 用于初始化关卡，并且调用上面的方法来展示整个游戏场景
+public void SetupScene (int level)
+{
+    // 创建地板和外墙
+    BoardSetup ();
+    
+    // 将中心的6*6大小的网格加入到一个列表中，障碍物、食物、敌人只在这个区域中生成
+    InitialiseList ();
+    
+    // 生成位置随机、数量随机、种类随机的障碍物，mininum、maximum 用于限制障碍物的数量
+    LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
+    
+    // 效果同上，用于随机创建食物
+    LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
+    
+    // 敌人的数量由当前关卡等级所决定。Mathf.Log 用于取对数，例如以2为底时，对8取对数等于3，所以第八关会出现3个敌人
+    int enemyCount = (int)Mathf.Log(level, 2f);
+    
+    // 效果同上，用于随机创建敌人
+    LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
+    
+    // 将出口实例化
+    Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
+}
+```
