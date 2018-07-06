@@ -126,7 +126,7 @@ Enemy2 的状态机写好了，但别忘了要修改一下 Enemy2 的属性：
 
 ## 关卡结构
 ---------
-从这一节开始，我们就要正式进入到编码环节了。还是老样子，我只讲重要的部分，不会全部讲，至于完整代码的话请看官网的，GitHub 的项目写的有点乱。
+从这一节开始，我们就要正式进入到编码环节了，我下面贴的代码都是官方的，完整代码的话请去官网看。
 
 ### BoardManager
 > 管理关卡的生成，场景中各元素的摆放。
@@ -195,3 +195,88 @@ public void SetupScene (int level)
     Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 }
 ```
+
+### GamaManager
+> 初始化游戏关卡，管理游戏进程，记录部分数值
+
+由于代码不多，我就全部贴上来了。
+
+```csharp
+public class GameManager : MonoBehaviour
+{
+
+    public static GameManager instance = null;              // 单例
+    private BoardManager boardScript;
+    private int level = 3;                                  // 当前关卡等级
+
+    // Awake 用于初始化，比 Start 先调用
+    void Awake()
+    {
+        // 若单例为空，则将当前对象赋值给单例
+        if (instance == null)
+            
+            instance = this;
+        
+        // 若单例不等于当前对象，那么要将当前对象销毁，因为单例只能存在一个。
+        else if (instance != this)
+            
+            Destroy(gameObject);    
+        
+        // 重新加载关卡时，我们任需要 GameManager 中的数据，所以不能够销货它
+        DontDestroyOnLoad(gameObject);
+        
+        // 获取脚本
+        boardScript = GetComponent();
+        
+        // 初始化游戏
+        InitGame();
+    }
+    
+    // 调用 BoardManager 中的 SetupScene() 方法来加载当前关卡
+    void InitGame()
+    {
+        boardScript.SetupScene(level);
+    }
+}
+```
+
+单例的写法有很多种，比如：
+
+```csharp
+private static GameManager _instance;
+
+public static GameManager Instance {
+    get {
+        return _instance;
+    }
+}
+```
+
+### Loader
+> 实例化游戏关卡和音乐
+
+官方的源码还额外写了一个<code>Loader</code>脚本用于加载游戏和音乐。
+
+```csharp
+public class Loader : MonoBehaviour 
+{
+    public GameObject gameManager;          // 实例化 GameManager 预制体
+    public GameObject soundManager;         // 实例化 SoundManager 预制体
+    
+    
+    void Awake ()
+    {
+        // GameManager 为空时对其进行实例化
+        if (GameManager.instance == null)
+            
+            Instantiate(gameManager);
+        
+        // SoundManager 为空时对其进行实例化
+        if (SoundManager.instance == null)
+            
+            Instantiate(soundManager);
+    }
+}
+```
+
+因为游戏是关卡形式的，为了方便加载，<code>GameManager</code>和<code>SoundManager</code>都被做成了预制体，且都是单例。
