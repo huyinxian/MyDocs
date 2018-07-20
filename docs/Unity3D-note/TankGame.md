@@ -164,7 +164,7 @@ public class TankHealth : MonoBehaviour {
 
 ### 为子弹添加爆炸效果
 
-由于子弹在碰撞到任何物体时都会立即发生爆炸，所以我们应该把`Collider`组建中的`Is Trigger`勾选上。接下来，把爆炸特效`ShellExplosion`中的`Play On Wake`勾选上，这一属性会让`ShellExplosion`在被创建时就立即播放特效。
+由于子弹在碰撞到任何物体时都会立即发生爆炸，所以我们应该把`Collider`组件中的`Is Trigger`勾选上。接下来，把爆炸特效`ShellExplosion`中的`Play On Wake`勾选上，这一属性会让`ShellExplosion`在被创建时就立即播放特效。
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/TankGame/09.png)
 
