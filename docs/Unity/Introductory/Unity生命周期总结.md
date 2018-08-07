@@ -153,5 +153,5 @@ void OnCollisionExit(Collision collisionInfo);
 主要有三个方法：
 
 * **OnApplicationQuit**：在退出游戏之前，将在所有的游戏对象上调用该方法。如果是在编辑器中，那么就是当用户点下停止按钮是时调用。
-* **OnDisable**：当对象变为未激活状态时，就会调用这个方法。脚本被卸载时会调用 `OnDisable`，而脚本载入时会调用 `OnEnable()`。
+* **OnDisable**：当对象变为未激活状态时，就会调用这个方法。脚本被卸载时会调用 `OnDisable()`，而脚本载入时会调用 `OnEnable()`。
 * **OnDestroy**：当继承自 MonoBehaviour 的类被销毁时，这个方法就会被调用。不过前提是游戏物体处于激活状态。
