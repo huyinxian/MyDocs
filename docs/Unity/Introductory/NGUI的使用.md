@@ -448,4 +448,4 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
 
-?> Slider 还可以设置步长（Steps），用于控制滑块滑动的次数。比如你设置 5，那么滑块每次就只能移动 25%。
+?> Slider 还可以设置步长（Steps），用于控制滑块滑动的次数。比如你设置 5，那么滑块能够移动的位置就是 0%、25%、50%、75%、100%。
