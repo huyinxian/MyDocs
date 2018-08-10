@@ -1,8 +1,8 @@
-# 脚本生命周期详解
+# Unity生命周期详解
 
 说真的，没事多看看文档，有些内容文档里面写的是真的很全面：[生命周期](http://docs.unity3d.com/Manual/ExecutionOrder.html)。
 
-下面这张图全面的描绘了脚本的整个生命周期：
+下面这张图全面的描绘了Unity的整个生命周期：
 
 ![](http://obkyr9y96.bkt.clouddn.com/monobehaviour_flowchart.svg)
 
