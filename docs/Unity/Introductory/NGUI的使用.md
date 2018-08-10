@@ -324,3 +324,66 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/42.png)
 
 看到了吗？每一个边框都能够设置自己的参照物，对于复杂的 UI 界面应该是足以胜任了。
+
+## 补间动画
+
+---
+
+补间动画（Tween）可以简单地理解为从一个状态过渡到另一个状态，比如从白色变为黑色、从这个点移动到那个点。补间动画可以帮助我们实现一些不错的游戏效果，如果没有插件的帮助，我们想要做到这一点一般得使用线性插值（Lerp）。
+
+### 透明度
+
+还是先创建一个标签，然后右键选择 `Tween` -> `Alpha`：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/43.png)
+
+简单地介绍一下 Tween Alpha 组件：
+
+* **From、To**：从某个透明度变化到另一个透明度。
+* **Play Style**：一共有三种模式。`Once` 是只执行一次；`Loop` 是循环执行动画；`Ping Pong` 是从 From 变化到 To，然后再从 To 变化到 From，比起 `Loop` 更自然一些。
+* **Animation Curve**：动画曲线，与 Unity 自带的插件是一样的。
+* **Duration**：动画的时长。
+* **Start Delay**：延迟几秒后执行。
+* **Tween Group**：用于给动画分组。比如某个控件有两个动画，那么可以将它们的 `Tween Group` 设置为不同的值，想要使用时可以通过编号来调用。
+* **Ignore TimeScale**：忽略 `Time.timeScale` 的影响。
+* **Use Fixed Update**：使用 `FixedUpdate()` 来更新动画。
+
+Tween Alpha 可以让标签从透明变为不透明：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/44.png)
+
+顺带一提，动画曲线的横坐标为时间，纵坐标为数值（根据具体情况决定，在这里是透明度）：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/45.png)
+
+### 颜色
+
+Tween Color 的用法也是一目了然的：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/46.png)
+
+### 宽度
+
+Tween Width 可以改变控件的宽度，不过要注意的是，如果你使用的是文本框，那么你就得保证文本框的大小足以容纳文本内容（不要设置为 Resize Freely）。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/47.png)
+
+### 高度
+
+Tween Height 可以改变控件的高度。
+
+### 旋转
+
+Tween Rotation 用于改变控件的旋转值。
+
+### 缩放
+
+Tween Scale 用于改变控件的缩放倍数。
+
+### 位置
+
+改变位置的动画有两种。第一种是 Tween Position，可以让控件从某一位置移动到另一位置。第二种是 Tween Transform，它需要获取两个物体的 Transform 组件：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/48.png)
+
+比如我要让标签从左边的精灵移动到右边的精灵，那么只需要将两个精灵的 Transform 组件赋值给 Tween Transform 即可。
