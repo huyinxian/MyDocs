@@ -416,6 +416,8 @@ UISlider 组件中有一个 `Foreground` 属性，将这个子精灵指定给它
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/52.png)
 
+?> 滑动条由 `Foreground`、`Background`、`Thumb` 组成。
+
 ### 添加背景
 
 在上述例子中，我是直接把 `Slider` 对象当做了背景。如果你想要做的正式一点，那么可以为其添加一个子精灵，用以充当背景：
@@ -446,4 +448,4 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
 
-?> 滑动条由 `Foreground`、`Background`、`Thumb` 组成。
+?> Slider 还可以设置步长（Steps），用于控制滑块每次滑动的距离。
