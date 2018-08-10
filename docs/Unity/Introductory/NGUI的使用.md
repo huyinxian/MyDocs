@@ -387,3 +387,63 @@ Tween Scale 用于改变控件的缩放倍数。
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/48.png)
 
 比如我要让标签从左边的精灵移动到右边的精灵，那么只需要将两个精灵的 Transform 组件赋值给 Tween Transform 即可。
+
+### 动画结束
+
+最后再说一句，Tween 组件中还有一个 `On Finished` 属性。如果动画完毕后需要调用某些方法，那么你可以在这里指定。
+
+## 滑动条
+
+---
+
+滑动条（Slider）是 UI 界面中常用的控件，一般可以用于调节某些设置（声音、亮度等）。
+
+### 创建滑动条
+
+一般来说，滑动条会有一个背景框和一个填充条。创建一个精灵，选择一张合适的图片，然后为其添加 `UISlider` 组件：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/49.png)
+
+为它创建一个子精灵，用来充当填充条：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/50.png)
+
+UISlider 组件中有一个 `Foreground` 属性，将这个子精灵指定给它：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/51.png)
+
+这样，我们就非常轻松的制作了一个滑动条：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/52.png)
+
+### 添加背景
+
+在上述例子中，我是直接把 `Slider` 对象当做了背景。如果你想要做的正式一点，那么可以为其添加一个子精灵，用以充当背景：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/53.png)
+
+?> 由于背景是之后创建的，所以你得把填充条的 Depth 设置的高一些，避免被背景覆盖。
+
+### 添加数值显示
+
+假如我们想要确切的知道滑动条的数值，那么不妨制作一个标签：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/54.png)
+
+UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它，然后选择 `SetCurrentPercent` 方法。这样一来，当滑动条的数值改变时，标签就会自动显示这个数值所对应的百分比：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/55.png)
+
+?> NGUI 帮我们封装了许多种方法，基本上不需要我们动手编写。
+
+### 添加滑块
+
+为了让滑动条好看一些，我们需要为其添加一个滑块：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/56.png)
+
+效果如下：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
+
+?> 滑动条由 `Foreground`、`Background`、`Thumb` 组成。
