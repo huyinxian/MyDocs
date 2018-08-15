@@ -449,3 +449,40 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
 
 ?> Slider 还可以设置步长（Steps），用于控制滑块滑动的次数。比如你设置 5，那么滑块能够移动的位置就是 0%、25%、50%、75%、100%。
+
+## 下拉列表
+
+---
+
+还是先创建一个精灵，然后给它添加 `UIPopupList` 组件：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/63.png)
+
+想要添加新选项的话直接在文本框中输入即可。下图是运行效果：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/64.png)
+
+简单的介绍一下几个属性：
+
+* **Position**：列表的出现位置。如果选择自动的话，控件会根据其位置来判断列表应该在下面还是在上面（优先下面）。
+* **Selection**：选项的选择方式。`OnPress` 表示只要鼠标按下就会切换选项，而 `OnClick` 只会响应轻击鼠标的操作（不能按住）。
+* **Alignment**：选项的对齐方式。
+* **Open on**：列表打开的方式。例如双击打开、单击打开、右键打开等。
+* **Localized**：本地化选项，比如选择语言等等。这个之后再讲。
+* **Keep Value**：勾选了这个属性后，你可以设置列表的初始值（比如这里选择的是 Option1）。
+
+?> Open On 属性中有一个 `Manual` 选项，意义不明。另外 On Top 属性的用途也不是很清楚。
+
+下拉列表虽然有了，但是菜单项上依旧是什么都没有。创建一个标签，将它赋值给 On Value Change 属性：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/65.png)
+
+另外，我们要给菜单选项设置一个初始值：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/66.png)
+
+效果如下：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/67.png)
+
+?> 我们还可以对选项的样式进行修改，比如选项的文本，还有鼠标挪动到选项上时出现的高光效果。
