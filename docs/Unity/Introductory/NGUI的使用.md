@@ -486,3 +486,17 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/67.png)
 
 ?> 我们还可以对选项的样式进行修改，比如选项的文本，还有鼠标挪动到选项上时出现的高光效果。
+
+## 单选框
+
+---
+
+单选框（Toggle）就是我们常见的勾选框，一般用于某些属性的开启与关闭。创建一个底框，为它添加 `UIToggle` 组件：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/68.png)
+
+光有底框还不行，我们还得添加一个“勾”。把创建好的精灵赋值给底框，一个单选框就做好了：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/69.png)
+
+?> 除了直接添加精灵图片，单选框的效果还有很多种，比如添加动画。另外，`Transition` 属性可以设置勾选时的效果。
