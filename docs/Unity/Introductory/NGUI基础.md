@@ -30,6 +30,8 @@ NGUI 是以 `.unitypackage` 的形式存储的，想要在工程使用的话直�
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/23.png)
 
+精灵一般是和别的控件一起使用的，比如进度条需要用精灵来显示。当然，如果 UI 界面有一些小的图片，或者需要展示某些图片等等，你都可以使用精灵。这样的好处就在于精灵会和图集一起载入内存，不需要新增一个 DrawCall（你可以暂时理解为渲染性能的计量单位）去渲染它。
+
 ### 图集
 
 图集（Atlas）是许多小图片的集合。在把小图片打包成图集后，可以根据需要使用其中的某些精灵。图集可以减小美术资源的体积，并且还能够减少载入内存的操作（图集会作为整体一次载入内存）并提高渲染性能。这样，游戏程序就不需要再维护大量的零碎资源。
@@ -54,33 +56,65 @@ NGUI 是以 `.unitypackage` 的形式存储的，想要在工程使用的话直�
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/24.png)
 
-## UIRoot、UICamera、UIPanel
+## UIRoot组件
 
 ---
-
-在创建 UI 时，UI Root 和 Camera 都是自动生成的。UI Root 对象上附带了 UIRoot 和 UIPanel 两个组件，而子物体 Camera 则附带了 UICamera 组件。
-
-### UIRoot组件
 
 UI 的组织结构类似一棵树，而 UI Root 则是这颗树的根。UIRoot 组件的作用是缩放整个 UI，由于 UI 通常是以像素为单位，而 Unity 以米为单位，此时如果不做缩放的话显然就会导致 UI 界面的错误。
 
 UIRoot 提供了三种缩放的方式，也就是 Type 值：`Flexible`、`Constrained`、`ConstrainedOnMobiles`。
 
-Flexible 是指像素大小永远不变，也就是说不管游戏分辨率如何变化，它只会保持原来的像素大小。虽然这种做法会让图片显得很清晰，但在不同分辨率的窗口中会让 UI 显得很突兀。
+### Flexible
 
-Constrained 与第一种方式完全相反，你必须要设置 UIRoot 的 `ManualHeight` 值。比如你将它设置为 1000，然后将一张 100*100 的图片放入到 UI 中，此时图片就会占据整个 UI 界面的 1/10。之后不管屏幕的分辨率如何变化，这张图片始终会保持与界面 1:10 的比例。
+Flexible 是指像素大小永远不变，也就是说不管游戏分辨率如何变化，它只会保持原来的像素大小。虽然这种做法会让图片显得很清晰，但在不同分辨率的窗口中会让 UI 显得很突兀。一般来说，该模式只用于 PC 这种可以调节窗口大小的平台。
+
+在该模式下，你必须要设置 `MinimumHeight` 和 `MaximumHeight`。例如，将最小高度设为 720，将最大高度设为 900，那么在分辨率 800*600 的窗口中，由于窗口高度小于最小高度，UIRoot 就会按照 Constrained 模式下 ContentHeight 为 720 的情况处理。如果是窗口高度大于最大高度，那么就是按照 ContentHeight 为 900 的情况处理。
+
+### Constrained
+
+与第一种模式相反，Constrained 是可以缩放的。在该模式下，你可以设置 `ContentWidth` 和 `ContentHeight`。这两个值之后还有一个勾选项，假如你只勾选了高度，那么 UI 就会基于高度进行缩放。如果你两个都勾选了，那么就会根据情况来进行缩放。下面来举个例子。
+
+假设 UI 在设计时是以 960×640 为基准的，且基于高度进行缩放，那么就是如下图这样设置：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/58.png)
+
+我们的 UI 界面一共有三个按钮，且按钮的锚点分别设置为左、无、右。当游戏运行在 960×640 分辨率下时，效果如下：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/59.png)
+
+如果是在 640×480 时，是这样的：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/60.png)
+
+看起来是不是没什么问题？那我们来试一个极端点的情况：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/61.png)
+
+由于 UI 是基于高度进行缩放的，那么为了保证高度的显示正常，UI 的宽度就会被压缩或者拉伸，自然也就发生了按钮重叠的现象。
+
+为了解决这个问题，我们得将 ContentWidth 勾选上。这样一来，当游戏窗口的长宽比大于 UI 的长宽比时，UI 会基于高度进行缩放；当游戏窗口的长宽比小于 UI 的长宽比时，UI 会基于宽度进行缩放。
+
+修改过后的效果如下：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/62.png)
+
+480×640 的长宽比为 0.75 < 1.5，那么 UI 就会将高度进行压缩，而不是一味地减少宽度。
+
+### ConstrainedOnMobiles
 
 ConstrainedOnMobiles 是前两种方式的结合体，它会让 UI 在 PC、Mac、Linux 下使用 Flexible，在移动设备上采用 ConstrainedOnMobiles。
 
-另外，如果你没有选择 Constrained，你就必须要设置 `MinimumHeight` 和 `MaximumHeight`。比如在 Flexible 模式下，将最小高度设为 720，将最大高度设为 900，那么在分辨率 800*600 的窗口中，由于窗口高度小于最小高度，UIRoot 就会按照 Constrained 模式下 ManualHeight 为 720 的情况处理。如果是窗口高度大于最大高度，那么就是按照 ManualHeight 为 900 的情况处理。
+## UIPanel组件
 
-### UIPanel组件
+---
 
 Panel 可以理解为容器或者面板，用于容纳一些控件。UIPanel 有很多属性，比如 `Alpha` 代表透明度，它用于控制它之下的所有 `Widget`（一种容器）的透明度，可以做出 UI 界面淡入、淡出的效果。
 
 `Depth` 属性代表深度，这个将决定渲染的顺序，也就是决定哪个在上面哪个在下面。Panel 具有深度，Widget 也有深度，但是 Panel 的权重要高于 Widget。一般来说，首先是决定 Panel 的上下顺序，然后才是决定 Panel 中每一个控件的顺序（这个有点像 Sorting Layer 与 Order In Layer）。如果你创建了多个 Panel，不要让它们共用同一深度。
 
-### UICamera组件
+## UICamera组件
+
+---
 
 这个组件的大部分设置都不需要改动，唯一需要注意的是 `EventMask`。这个选项与 `CullingMask` 很像，相机一般用它来剔除不可见的物体，而 `EventMask` 则是用来选择性的接收物体的事件。
 
