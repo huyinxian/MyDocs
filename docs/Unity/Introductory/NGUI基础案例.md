@@ -101,3 +101,71 @@ public class Skill : MonoBehaviour {
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/09.png)
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/10.png)
+
+## 简易聊天室
+
+---
+
+创建一个底框，添加 `UIDragObject` 组件。然后添加聊天框背景以及缩放按钮：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/11.png)
+
+用于缩放的组件是 `UIDragResize`：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/12.png)
+
+当然，由于我们还没有设置锚点，所以缩放之后 UI 就会变形：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/13.png)
+
+设置锚点之后再看：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/14.png)
+
+接下来，为聊天框区域添加 `UITextList` 组件，然后再添加滚动条以及输入框。这样，基本的聊天框就搭建完毕了：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/15.png)
+
+当然，这还没完，你得为输入框做一些改动。首先更改下面的设置：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/16.png)
+
+这个 `RemoveFocus` 会在你输入完成后取消光标，如果你想继续输入的话就得重新点一下输入框，非常麻烦。为了输入的流畅性，建议把这个方法给取消掉。
+
+接下来为输入框写一个脚本，处理输入的内容：
+
+```csharp
+public class ChangeInputContent : MonoBehaviour {
+
+    [HideInInspector] public UIInput input;
+    public UITextList textList;
+
+    private string[] names = new string[] {
+        "Cappuccino",
+        "huyinxian",
+        "大哥",
+        "管理"
+    };
+
+    void Start() {
+        input = this.GetComponent<UIInput>();
+    }
+    
+    public void OnChatInput() {
+        string chatMessage = input.value;
+        string name = names[Random.Range(0, 4)];
+        textList.Add(name + "：" + chatMessage);
+        input.value = "";
+    }
+}
+```
+
+一般来说，聊天室会取到用户的 ID，然后在每段文字的前面加上用户名。由于我们这个只是测试用例，所以就随便弄了几个名字。
+
+为相关的属性赋值：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/17.png)
+
+效果如下：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/18.png)
