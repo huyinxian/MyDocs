@@ -332,7 +332,13 @@ public Vector3 value
 protected override void OnUpdate (float factor, bool isFinished) { value = from * (1f - factor) + to * factor; }
 ```
 
-`value` 代表当前物体的坐标，用于取代旧版中的 `position`。`cachedTransform` 其实就是当前物体的 Transform 组件。至于 `OnUpdate` 主要作用是根据传入的动画进度修改物体的坐标。
+重点说一下 `value`。在 TweenPosition 中，`value` 代表当前物体的坐标。但如果是在其他的动画组件中，它就有可能是缩放值、透明度等等。但不管是哪一种，`OnUpdate` 都可以使用下面这行代码来改变 `value`：
+
+```csharp
+value = from * (1f - factor) + to * factor;
+```
+
+当然，具体情况具体分析，OnUpdate 有时也要处理其他的参数。
 
 之后再来看看子类中的 `Begin` 方法：
 
