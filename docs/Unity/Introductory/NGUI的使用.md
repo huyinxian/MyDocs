@@ -579,10 +579,44 @@ UIScrollView 用来控制滚动的效果，几个主要的属性如下：
 
 ### 滚动条
 
-这个东西其实和滑动条是一样的，只不过它并没有进度显示（Foreground）。一般来说，对于那种大段文字说明，我们可以为其添加一个滑动条，方便玩家拖动文本（不加其实也可以直接拖动）。
+滚动条（Scroll Bar）其实和滑动条是一样的，只不过它并没有进度显示（Foreground）。一般来说，对于那种大段文字说明，我们可以为其添加一个滑动条，方便玩家拖动文本（不加其实也可以直接拖动）。
 
 ### 使用方法
 
 使用方法比较简单，直接为视窗下的子精灵添加一个 `UIDragScrollView` 组件即可。
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/75.png)
+
+## 可滚动的文本列表
+
+---
+
+之前我们有介绍过文本框，不过那个只能够用来输入一行文字信息。如果我们想要显示一大段文字，或者干脆要做一个聊天区域时，势必就需要一个可以上下滚动的文本框。
+
+创建一个标签，属性设置为 `Clamp Content`、左对齐。之后为其添加 `UITextList` 组件：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/76.png)
+
+UITextList 组件需要两个对象，一个是用于显示文本的标签，还有一个是滚动条（Scroll Bar）。由于 UITextList 在初始化时会清空文本，所以我们得额外写一个脚本来为其添加内容：
+
+```csharp
+public class AddContent : MonoBehaviour {
+    public UITextList mTextList;
+
+    private int lineIndex = 0;
+
+    void Start() {
+        mTextList = this.GetComponent<UITextList>();
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.A)) {
+            mTextList.Add("这是一段文字：" + lineIndex++);
+        }
+    }
+}
+```
+
+然后不断地按 A，之后你就可以用滚动条来查看前后的文本内容：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/77.png)
