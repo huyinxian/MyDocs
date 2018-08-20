@@ -620,3 +620,5 @@ public class AddContent : MonoBehaviour {
 然后不断地按 A，之后你就可以用滚动条来查看前后的文本内容：
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/77.png)
+
+?> 如果你不想用滚动条的话，可以为标签添加 Box Collider，这样就能够直接拖拽文本列表。
