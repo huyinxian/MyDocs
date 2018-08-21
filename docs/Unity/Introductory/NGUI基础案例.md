@@ -169,3 +169,61 @@ public class ChangeInputContent : MonoBehaviour {
 效果如下：
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/18.png)
+
+## 简易背包
+
+---
+
+教各位做一个很简单的背包系统。首先弄个背景，然后摆上一堆小格子（建议做成预制体）。随后选择一张你喜欢的图片，把它当做物品（最好也做成预制体）。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/19.png)
+
+拖动物品需要用到 `UIDragDropItem` 组件，这个组件与 `UIDragObject` 的差别就在于它可以设置松开鼠标后的操作。比如我们想要让物体始终处于当前格子的中心点，那么就可以这么写：
+
+```csharp
+public class BackpackItem : UIDragDropItem {
+    protected override void OnDragDropRelease(GameObject surface) {
+        base.OnDragDropRelease(surface);
+
+        this.transform.parent = surface.transform;
+        this.transform.localPosition = Vector3.zero;
+    }
+}
+```
+
+这里写的脚本是继承了 UIDragDropItem，并且重写了其中的 `OnDragDropRelease` 方法。该方法含有一个 `surface` 参数，包含了与物品碰撞的游戏物体。
+
+如果不懂的话可以看看效果，当你拖动物品至另一个格子时，物品就会自动设置到这个格子的中心点。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/20.png)
+
+光能够拖动还不够，假如另一个格子上已经存在了物品，那么就应该将这两个物品进行交换：
+
+```csharp
+public class BackpackItem : UIDragDropItem {
+    protected override void OnDragDropRelease(GameObject surface) {
+        base.OnDragDropRelease(surface);
+
+        // 如果物品拖动的位置是空格，那么将物体的父对象设置为这个空格
+        if (surface.tag == "Cell") {
+            this.transform.parent = surface.transform;
+            this.transform.localPosition = Vector3.zero;
+
+        // 如果物品拖动的位置已经有物品了，那么交换这两个物品
+        } else if (surface.tag == "Item") {
+            Transform parent = surface.transform.parent;
+            surface.transform.parent = this.transform.parent;
+            surface.transform.localPosition = Vector3.zero;
+
+            this.transform.parent = parent;
+            this.transform.localPosition = Vector3.zero;
+        }
+    }
+}
+```
+
+如果你分不清的话，可以给物品做上标识。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/21.png)
+
+?> 记得要给每个格子加上 Box Collider。
