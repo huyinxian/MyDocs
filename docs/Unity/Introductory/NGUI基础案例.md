@@ -174,7 +174,11 @@ public class ChangeInputContent : MonoBehaviour {
 
 ---
 
-教各位做一个很简单的背包系统。首先弄个背景，然后摆上一堆小格子（建议做成预制体）。随后选择一张你喜欢的图片，把它当做物品（最好也做成预制体）。
+教各位做一个很简单的背包系统，有物品的添加和拖拽功能。
+
+### 物品拖拽
+
+首先弄个背景，然后摆上一堆小格子（建议做成预制体）。随后选择一张你喜欢的图片，把它当做物品（最好也做成预制体）。
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/19.png)
 
@@ -224,6 +228,87 @@ public class BackpackItem : UIDragDropItem {
 
 如果你分不清的话，可以给物品做上标识。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/21.png)
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/22.png)
 
 ?> 记得要给每个格子加上 Box Collider。
+
+### 物品添加
+
+对于新加入的物品，如果它已经存在于背包中，那么就应该增加它的数量。如果不存在，那么就把它加入到背包中。
+
+由于我们改变物品的精灵图片以及标签，所以得在 `BackItem` 脚本中添加一些代码：
+
+_BackpackItem.cs_
+
+```csharp
+public UISprite sprite;
+public UILabel label;
+
+private int count = 1;          // 物品数量
+
+/// <summary>
+/// 增加物品数量
+/// </summary>
+public void AddCount(int number = 1) {
+    count += number;
+    label.text = count.ToString();
+}
+```
+
+之后你得记录所有的格子、物品图片的名称、物品的预制体：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/24.png)
+
+然后为背包写一个脚本：
+
+_Backpack.cs_
+
+```csharp
+public class Backpack : MonoBehaviour {
+    public GameObject[] cells;
+    public string[] itemNames;          // 物品图片的名称
+    public GameObject itemPrefab;
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.A)) {
+            PickUp();
+        }
+    }
+
+    /// <summary>
+    /// 模拟捡起物品的操作
+    /// </summary>
+    public void PickUp() {
+        int index = Random.Range(0, itemNames.Length);
+        string name = itemNames[index];
+        bool isFinded = false;
+
+        // 遍历所有格子，如果新加入的物品已经在背包中，那么就增加其数量
+        for (int i = 0; i < cells.Length; i++) {
+            if (cells[i].transform.childCount > 0) {
+                BackpackItem item = cells[i].GetComponentInChildren<BackpackItem>();
+
+                if (item.sprite.spriteName == name) {
+                    isFinded = true;
+                    item.AddCount(1);
+                    break;
+                }
+            }
+        }
+
+        // 如果新加入的物品不在背包中，那么就把它添加到格子中
+        if (isFinded == false) {
+            for (int i = 0; i < cells.Length; i++) {
+                if (cells[i].transform.childCount == 0) {
+                    GameObject go = NGUITools.AddChild(cells[i], itemPrefab);
+                    go.GetComponent<UISprite>().spriteName = name;
+                    go.transform.localPosition = Vector3.zero;
+                    break;
+                }
+            }
+        }
+    }
+}
+```
+
+由于这个只是模拟背包的添加操作，所以我直接用了随机数来添加。另外，由于物品的精灵图片都是在同一个图集，所以只需知道图片的名称就能修改 `UISprite`。
