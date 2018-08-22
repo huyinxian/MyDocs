@@ -1,6 +1,6 @@
 * [**Unity**](Unity/Introductory/)
     * [基础入门](Unity/Introductory/)
-* [**游戏编程**](GamePrograming/Unity/Introductory/)
+* [**游戏编程**](GamePrograming/GameProject/)
     * [个人项目](GamePrograming/GameProject/)
     * [设计模式](GamePrograming/GameProgramingPattern/)
 * [**数据结构**](Algorithm/LeetCode/)
@@ -8,4 +8,4 @@
 * [**链接**](https://github.com/huyinxian)
     * [GitHub](https://github.com/huyinxian)
     * [博客](http://fantasticmiao.cn/)
-    * [推荐博主](Link/)
+    * [博主推荐](Link/技术博主汇总)

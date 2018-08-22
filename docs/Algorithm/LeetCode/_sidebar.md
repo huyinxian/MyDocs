@@ -1,5 +1,18 @@
-* **简单**
-    * [1-10](Algorithm/LeetCode/简单1-10)
-    * [11-20](Algorithm/LeetCode/简单11-20)
-* **中等**
-    * [1-10](Algorithm/LeetCode/中等1-10)
+* **数据结构**
+    * [字符串](Algorithm/LeetCode/字符串)
+    * [树](Algorithm/LeetCode/树)
+    * [图论](Algorithm/LeetCode/图论)
+    * [位运算](Algorithm/LeetCode/位运算)
+    * [链表](Algorithm/LeetCode/链表)
+    * [栈和队列](Algorithm/LeetCode/栈和队列)
+    * [数组和矩阵](Algorithm/LeetCode/数组和矩阵)
+    * [哈希表](Algorithm/LeetCode/哈希表)
+* **算法**
+    * [排序](Algorithm/LeetCode/排序)
+    * [贪心算法](Algorithm/LeetCode/贪心算法)
+    * [二分查找](Algorithm/LeetCode/二分查找)
+    * [分治](Algorithm/LeetCode/分治)
+    * [搜索](Algorithm/LeetCode/搜索)
+    * [动态规划](Algorithm/LeetCode/动态规划)
+    * [数学相关](Algorithm/LeetCode/数学相关)
+    * [双指针](Algorithm/LeetCode/双指针)
