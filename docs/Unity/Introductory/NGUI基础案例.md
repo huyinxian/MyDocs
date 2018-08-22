@@ -312,3 +312,5 @@ public class Backpack : MonoBehaviour {
 ```
 
 由于这个只是模拟背包的添加操作，所以我直接用了随机数来添加。另外，由于物品的精灵图片都是在同一个图集，所以只需知道图片的名称就能修改 `UISprite`。
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80%E6%A1%88%E4%BE%8B/23.png)
