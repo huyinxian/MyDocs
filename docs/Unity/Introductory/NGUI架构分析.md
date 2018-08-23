@@ -363,3 +363,185 @@ static public TweenPosition Begin (GameObject go, float duration, Vector3 pos)
 ```
 
 如果 `duration` 小于等于 0 时，就相当于瞬移了。
+
+## UIRoot
+
+---
+
+只要接触过 NGUI 插件，就一定会知道 `UIRoot` 有多重要。在我们开发 UI 界面时，会以 UIRoot 为基础来创建一个 UI 树。
+
+### 缩放方式
+
+如果不明白它的作用，可以看一看属性面板：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/03.png)
+
+其实之前在基础篇的时候我已经介绍过了，UIRoot 用于控制整个 UI 树的缩放，一共包含有三种方式：
+
+```csharp
+[DoNotObfuscateNGUI] public enum Scaling
+{
+    Flexible,
+    Constrained,
+    ConstrainedOnMobiles,
+}
+```
+
+对于不同的缩放方式，UIRoot 会依据不同的值来进行缩放，比如 Flexible 会依据 `minimumHeight`、`maximumHeight` 等等。
+
+?> 如果对于缩放方式有疑问，请去看 NGUI 基础篇。
+
+### ConstrainedOnMobiles
+
+在该模式下，游戏会根据其所处的平台自动选择缩放方式。具体实现如下：
+
+```csharp
+/// <summary>
+/// Active scaling type, based on platform.
+/// </summary>
+
+public Scaling activeScaling
+{
+    get
+    {
+        Scaling scaling = scalingStyle;
+
+        if (scaling == Scaling.ConstrainedOnMobiles)
+#if UNITY_EDITOR || UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_WP_8_1 || UNITY_BLACKBERRY
+            return Scaling.Constrained;
+#else
+            return Scaling.Flexible;
+#endif
+        return scaling;
+    }
+}
+```
+
+也就是说，如果是在编辑器、iphone、安卓、WP8、WP8_1、黑莓等平台下，游戏会选择 `Constrained` 缩放模式，而其他情况下会选择 `Flexible` 模式。
+
+### Flexible与Constrained
+
+之前我曾粗浅地介绍过这两种模式，但其具体实现方式还是需要我们仔细研究：
+
+```csharp
+/// <summary>
+/// UI Root's active height, based on the size of the screen.
+/// </summary>
+
+public int activeHeight
+{
+    get
+    {
+        Scaling scaling = activeScaling;
+
+        if (scaling == Scaling.Flexible)
+        {
+            Vector2 screen = NGUITools.screenSize;
+            float aspect = screen.x / screen.y;
+
+            if (screen.y < minimumHeight)
+            {
+                screen.y = minimumHeight;
+                screen.x = screen.y * aspect;
+            }
+            else if (screen.y > maximumHeight)
+            {
+                screen.y = maximumHeight;
+                screen.x = screen.y * aspect;
+            }
+
+            // Portrait mode uses the maximum of width or height to shrink the UI
+            int height = Mathf.RoundToInt((shrinkPortraitUI && screen.y > screen.x) ? screen.y / aspect : screen.y);
+
+            // Adjust the final value by the DPI setting
+            return adjustByDPI ? NGUIMath.AdjustByDPI(height) : height;
+        }
+        else
+        {
+            Constraint cons = constraint;
+            if (cons == Constraint.FitHeight)
+                return manualHeight;
+
+            Vector2 screen = NGUITools.screenSize;
+            float aspect = screen.x / screen.y;
+            float initialAspect = (float)manualWidth / manualHeight;
+
+            switch (cons)
+            {
+                case Constraint.FitWidth:
+                {
+                    return Mathf.RoundToInt(manualWidth / aspect);
+                }
+                case Constraint.Fit:
+                {
+                    return (initialAspect > aspect) ?
+                        Mathf.RoundToInt(manualWidth / aspect) :
+                        manualHeight;
+                }
+                case Constraint.Fill:
+                {
+                    return (initialAspect < aspect) ?
+                        Mathf.RoundToInt(manualWidth / aspect) :
+                        manualHeight;
+                }
+            }
+            return manualHeight;
+        }
+    }
+}
+```
+
+首先，如果想要获取 UI 的实际高度，就得先通过 `NGUITools` 获取实际屏幕尺寸，然后算出屏幕的宽高比 `aspect`。之前我也讲过，`Flexible` 模式需要设置最小和最大高度，如果实际屏幕高度超出这个范围，那么屏幕高度就会被限制在边界值，然后根据 `aspect` 算出实际屏幕宽度。
+
+在计算 `height` 时，如果游戏是处于竖屏模式，且屏幕高度大于宽度，那么实际高度就会等于 `screen.y / aspect`；如果不是，那么就直接使用 `screen.y`。
+
+如果游戏用的是 `Constrained` 模式，那么 UI 界面会进行缩放以保持最佳的宽高比。在不同的分辨率下，UI 的大小看起来都会是一样的。
+
+### 缩放实现
+
+UIRoot 的缩放是如何实现的呢？看下 `UpdateScale` 方法就知道了：
+
+```csharp
+/// <summary>
+/// Immediately update the root's scale. Call this function after changing the min/max/manual height values.
+/// </summary>
+
+public void UpdateScale (bool updateAnchors = true)
+{
+    if (mTrans != null)
+    {
+        float calcActiveHeight = activeHeight;
+
+        if (calcActiveHeight > 0f)
+        {
+            float size = 2f / calcActiveHeight;
+
+            Vector3 ls = mTrans.localScale;
+
+            if (!(Mathf.Abs(ls.x - size) <= float.Epsilon) ||
+                !(Mathf.Abs(ls.y - size) <= float.Epsilon) ||
+                !(Mathf.Abs(ls.z - size) <= float.Epsilon))
+            {
+                mTrans.localScale = new Vector3(size, size, size);
+                if (updateAnchors) BroadcastMessage("UpdateAnchors", SendMessageOptions.DontRequireReceiver);
+            }
+        }
+    }
+}
+```
+
+`activeHeight` 就是上面讲过的实际高度，游戏根据这个值来确定 UI 的缩放。可能有人会好奇，`2f / calcActiveHeight` 是怎么来的？这就要说到摄像机了。
+
+### Camera
+
+先来看一下 UIRoot 下的 Camera：
+
+![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/04.png)
+
+Camera 的默认尺寸是 `1`，投影方式为正交投影。注意，这个 `size` 值表示视窗的一半高度，也就是说视野的高度其实是 `2`。
+
+这样一来，我想你应该知道 `2f` 是怎么回事了。
+
+### 影响UI大小的因素
+
+其实能够影响 UI 大小的不只是缩放方式，像是锚点、相机都可以影响。下一次我将分析一下 UICamera 组件。
