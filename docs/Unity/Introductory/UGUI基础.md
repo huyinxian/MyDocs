@@ -67,6 +67,10 @@ Canvas 画布就类似于 NGUI 中的 UIRoot，都是 UI 树的根节点。画�
 
 它有一个独有的参数 `Event Camera`，主要用来指定接收事件的相机，可以通过画布上的 `GraphicRaycaster` 组件发射射线产生事件。
 
+### EventSystem
+
+当你创建画布时，会自动创建一个 `EventSystem`。该对象主要用来监听用户的输入，如果需要屏蔽的话直接将该对象设置为未激活即可。`UnityEngine.EventSystems.EventSystem.current` 用于保存当前活动的 `EventSystem` 对象，可以根据需要调用。
+
 ## Image
 
 ---
