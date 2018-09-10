@@ -8,7 +8,7 @@
 * 一个乐于分享的程序员
 
 [GitHub](https://github.com/huyinxian/)
-[Blog](http://fantasticmiao.cn/)
+[Blog](http://blog.fantasticmiao.cn/)
 [Docs](README)
 
 <!-- 背景图片 -->
