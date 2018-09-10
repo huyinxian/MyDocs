@@ -42,7 +42,7 @@ NGUI 是以 `.unitypackage` 的形式存储的，想要在工程使用的话直�
 
 ### 纹理
 
-纹理（Texture）的用途与精灵类似，它是物体表面的纹路。不过与精灵不同的是，纹理拥有自己的材质球和 Shader。每一个纹理都将消耗一个 DrawCall（之后会解释），并且将会独立加载。
+纹理（Texture）的用途与精灵类似，它是物体表面的纹路。不过与精灵不同的是，纹理拥有自己的材质球和 Shader。每一个纹理都将消耗一个 DrawCall，并且将会独立加载。
 
 简单点来说，纹理本身只是一小块图片。比如它可以是一朵小花，然后通过旋转变换拉伸成一张布满花的贴纸墙。
 
@@ -62,7 +62,7 @@ NGUI 是以 `.unitypackage` 的形式存储的，想要在工程使用的话直�
 
 ---
 
-UI 的组织结构类似一棵树，而 UI Root 则是这颗树的根。UIRoot 组件的作用是缩放整个 UI，由于 UI 通常是以像素为单位，而 Unity 以米为单位，此时如果不做缩放的话显然就会导致 UI 界面的错误。
+UI 的组织结构类似一棵树，而 UI Root 则是这颗树的根，它主要用来缩放整个 UI 树。举个简单的例子，美术人员通常是使用像素为单位，而 Unity 作为 3D 引擎，使用的是米作为单位。显然，如果不对 UI 进行缩放的话就会导致整个界面的失调。
 
 UIRoot 提供了三种缩放的方式，也就是 Type 值：`Flexible`、`Constrained`、`ConstrainedOnMobiles`。
 
@@ -113,6 +113,8 @@ ConstrainedOnMobiles 是前两种方式的结合体，它会让 UI 在 PC、Mac�
 Panel 可以理解为容器或者面板，用于容纳一些控件。UIPanel 有很多属性，比如 `Alpha` 代表透明度，它用于控制它之下的所有 `Widget`（一种容器）的透明度，可以做出 UI 界面淡入、淡出的效果。
 
 `Depth` 属性代表深度，这个将决定渲染的顺序，也就是决定哪个在上面哪个在下面。Panel 具有深度，Widget 也有深度，但是 Panel 的权重要高于 Widget。一般来说，首先是决定 Panel 的上下顺序，然后才是决定 Panel 中每一个控件的顺序（这个有点像 Sorting Layer 与 Order In Layer）。如果你创建了多个 Panel，不要让它们共用同一深度。
+
+如果你的游戏包含多个窗口，那么最好让每个窗口都有一个 Panel。Panel 会控制其下所有的 Widget，然后通过 Widget 的 `geometry` 创建实际 DrawCall。可以说，没有 Panel 就无法渲染 UI，你可以把 Panel 当做 Unity 中的 `Renderer` 组件。
 
 ## UICamera组件
 
