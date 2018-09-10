@@ -48,5 +48,3 @@ namespace PureMVCDemo
 `ShowUIForms` 是 UI 框架中的方法，作用是显示之前做好的 UI 窗体。运行程序，效果如下：
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/%E4%BD%BF%E7%94%A8PureMVC%E5%BC%80%E5%8F%91FlappyBird/11.png)
-
-未完待续...
