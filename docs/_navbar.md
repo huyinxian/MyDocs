@@ -8,5 +8,6 @@
     * [LeetCode](Algorithm/LeetCode/)
 * [**链接**](https://github.com/huyinxian)
     * [GitHub](https://github.com/huyinxian)
-    * [博客](http://fantasticmiao.cn/)
+    * [老博客](http://fantasticmiao.cn/)
+    * [新博客](http://blog.fantasticmiao.cn/)
     * [博主推荐](Link/技术博主汇总)
