@@ -50,7 +50,7 @@ UI 界面的操作我就不多讲了，各位可以根据我上传的项目工�
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/MVC%E5%BC%80%E5%8F%91%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/05.png)
 
-Image 组件中有一个 `Raycast Target` 属性，该属性可以阻止点击事件向下传递。比如你有一个图片，然后有一个按钮覆盖在图片上。当你勾选 `Raycast Target` 时，只有按钮会响应事件，而按钮下的图片则不会响应。
+Image 组件中有一个 `Raycast Target` 属性，勾选该属性后，鼠标点击到该物体后将不再穿透到下面的物体。比如你有一个图片，然后有一个按钮覆盖在图片上。当你勾选 `Raycast Target` 时，只有按钮会响应事件，而按钮下的图片则不会响应。由于我们的背景是不响应事件的，为了节约性能，我们把该选项给取消掉吧。
 
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/MVC%E5%BC%80%E5%8F%91%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/07.png)
 
