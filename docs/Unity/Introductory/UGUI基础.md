@@ -93,6 +93,8 @@ Canvas 画布就类似于 NGUI 中的 UIRoot，都是 UI 树的根节点。画�
 
 Image 是 UGUI 中用于显示图片的控件，所有的 UI 元素都是以矩形来表现的，因此 UGUI 的控件都会带有 `RectTransform` 组件。如果你想要显示一个精灵图片，还请使用 Image 控件。
 
+Image 组件中有一个 `Sprite` 属性，这个属性指向我们需要显示的图片。另外，由于 UI 是 2D 的，所以你需要把图片的贴图格式（Texture Type）修改成 `Sprite (2D and UI)`。
+
 ![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/04.png)
 
 `RectTransform` 中的 `Anchor` 属性是用来设置锚点的，效果类似于 NGUI 中的 `Anchor` 属性，但是要方便很多。`Anchor` 中有一个 `stretch` 属性，它主要是用来设置 UI 的拉伸方式，当然你也可以直接拖动锚点的四个小三角：
