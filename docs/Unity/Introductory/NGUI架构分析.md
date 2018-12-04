@@ -8,7 +8,7 @@
 
 先上一张图，我这里列举了常用的几个组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/01.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/01.png)
 
 `UITweener` 是 Tween 动画的基类，由它派生出来的组件只是重写了基类的 `OnUpdate`，然后编写了相关的 `Begin` 方法，看懂了基类其他的自然也就懂了。
 
@@ -218,7 +218,7 @@ public AnimationCurve animationCurve = new AnimationCurve(new Keyframe(0f, 0f, 0
 
 动画曲线最主要的作用是让补间动画呈曲线变化，符合现实中的物理特性。另外，动画曲线虽然可以手动调节，但是也有许多约定俗成的函数可供我们使用：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/02.jpg)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/02.jpg)
 
 上面的这些函数叫做**缓冲函数**。
 
@@ -374,7 +374,7 @@ static public TweenPosition Begin (GameObject go, float duration, Vector3 pos)
 
 如果不明白它的作用，可以看一看属性面板：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/03.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/03.png)
 
 其实之前在基础篇的时候我已经介绍过了，UIRoot 用于控制整个 UI 树的缩放，一共包含有三种方式：
 
@@ -536,7 +536,7 @@ public void UpdateScale (bool updateAnchors = true)
 
 先来看一下 UIRoot 下的 Camera：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/04.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/04.png)
 
 Camera 的默认尺寸是 `1`，投影方式为正交投影。注意，这个 `size` 值表示视窗的一半高度，也就是说视野的高度其实是 `2`。
 

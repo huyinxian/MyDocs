@@ -14,7 +14,7 @@
 
 创建标签的步骤很简单，首先选中 UI Root，然后在场景视图中右键选择 `Create` -> `Label`。这样，我们就能够创建一个标签了。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/01.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/01.png)
 
 !> 步骤不要乱，如果你没有选中 UI Root，那么你点击右键是没有反应的。NGUI 毕竟只是插件，就操作性来说没有 UGUI 方便。
 
@@ -26,7 +26,7 @@
 
 如果你选择 NGUI 的话，那么搜索出来的字体就是 NGUI 自带的字体，以及你使用 `Font Maker` 制作的字体（这种工具之后会说）。这种字体是静态字体，以预制体的形式存储。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/03.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/03.png)
 
 ?> 如果没有显示出字体，那你可以点击 Show All 刷新一下。
 
@@ -51,7 +51,7 @@ Resize Freely 会锁定文本框大小，并自动将它调节至与文本内容
 
 Resize Height 会锁定文本框的高度，但是你可以调节它的宽度。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/02.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/02.png)
 
 ## 精灵
 
@@ -59,15 +59,15 @@ Resize Height 会锁定文本框的高度，但是你可以调节它的宽度。
 
 创建一个精灵，点击 `Atlas` 属性，选择你想要的图集：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/04.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/04.png)
 
 NGUI 的图集是以预制体的形式存储的，你也可以使用 `Atlas Maker` 来创建属于自己的图集。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/05.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/05.png)
 
 精灵的属性不多，可以自己去试一试，比如 `Flip` 是控制精灵的翻转。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/06.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/06.png)
 
 ## 面板
 
@@ -75,11 +75,11 @@ NGUI 的图集是以预制体的形式存储的，你也可以使用 `Atlas Make
 
 Panel 是一种容器，可以用于 UI 的分层。创建一个 Panel，然后为它创建精灵和标签两个子对象。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/07.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/07.png)
 
 正如之前所说，Panel 可以控制其下所有 Widget 的透明度。`Depth` 用于设置其渲染顺序，`Clipping` 则是用于控制面板的显示区域。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/08.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/08.png)
 
 Clipping 有三个额外的属性：
 
@@ -101,7 +101,7 @@ NGUI 的按钮比较独特，它并不是一个单独出来的控件，你可以
 
 按钮的 Collider 并不是用来做碰撞检测的，而是为了判断鼠标是否点中了按钮。再次右键选择 `Attach` -> `Button Scirpt`，这样你就创建出了一个按钮。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/09.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/09.png)
 
 UIButton 有这么几个属性：
 
@@ -113,27 +113,27 @@ UIButton 有这么几个属性：
 
 运行效果如下：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/10.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/10.png)
 
 ### 精灵按钮
 
 当然，你也可以用精灵来创建按钮，步骤与标签类似。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/12.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/12.png)
 
 精灵按钮可以设置它在四种状态下的精灵图片，比如我用 emoji 标签做了一个按钮，正常时它显示微笑标签，鼠标放上去时显示惊讶表情，按钮按下时显示愤怒表情。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/11.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/11.png)
 
 ### 组合按钮
 
 一般按钮都是由文字和底框组合起来的，创建方法也很简单，就是先创建精灵按钮，然后为它添加一个子标签。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/13.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/13.png)
 
 不过当你按下按钮的时候，只有按钮的底框会变色，标签是保持不变的。想要让标签跟着变色的话，你需要为精灵再添加一个 UIButton 组件（必须是精灵，因为标签没有 Collider）。当然，如果按照 `Attach` -> `Button Scirpt` 是无法再次添加组件的，你必须在属性栏中搜索 `Button` 然后添加。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/15.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/15.png)
 
 ?> 如果你想为某个控件添加子控件，可以选中它然后创建你想要的控件，这时就会多出 `Child` 和 `Sibling` 两种选项，分别为子对象和同级对象。
 
@@ -155,7 +155,7 @@ void OnSpriteButtonClick() {
 
 之后的操作方法与 UGUI 类似，将挂载了脚本的物体拖拽至 `Notify`，然后选择你想要调用的方法：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/16.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/16.png)
 
 ## 图集
 
@@ -167,27 +167,27 @@ void OnSpriteButtonClick() {
 
 NGUI 内置了 `Atlas Maker`，我们可以在菜单栏中选择 `NGUI` -> `Open` -> `Atlas Maker` 打开它。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/17.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/17.png)
 
 选择 `New`，然后在 Project 窗口中选择你想要打包成图集的图片。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/18.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/18.png)
 
 看到图片右边的 `Add` 了吗？这表示精灵是新添加到图集中的。点击 `Create`，稍等片刻后就能够看到打包好的图集：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/19.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/19.png)
 
 第一个是材质球；第二个是预制体，也就是我们需要用到的图集；第三个是将所有精灵汇合到一起的大图。
 
 既然已经创建了第一个属于我们的图集，那么不妨用它来创建一个按钮吧：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/21.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/21.png)
 
 ### 修改图集
 
 如果你想要删除某些图片，可以再次打开 Atlas Maker，选中我们的图集，然后点击对应图片的删除按钮。但如果你想要更换图集中的某些图片，你无须删除旧图片，只需将新的图片名改成和旧图片一样，然后选中它：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/22.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/22.png)
 
 Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添加它，如果重名了则会替换旧图片。
 
@@ -197,25 +197,25 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 借用上次自定义的按钮，我们将它进行拉伸：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/25.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/25.png)
 
 由于按钮放大了很多倍，所以它的边框在我们看来是很模糊的。如果我们不希望按钮在放大后产生这种效果，就有必要用到九宫格切图。
 
 将精灵的 `Type` 属性改为 `Sliced`，然后编辑精灵：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/26.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/26.png)
 
 编辑选项有三个属性，分别为 `Dimensions`、`Border`、`Padding`。Dimensions 是精灵的尺寸，不要修改；Padding 表示的是与精灵边框的间距；而 Border 则是裁切的选项。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/27.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/27.png)
 
 修改这四个值，裁切按钮的四个角：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/28.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/28.png)
 
 这样一来，按钮的边框就不会再放大了：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/29.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/29.png)
 
 为什么叫做九宫格切图呢？因为在切图的时候，上下左右四根线刚好能够把图片分成九个区域，而只有中间的区域才会进行缩放，边框区域是不会进行缩放的。对于游戏中的圆角等按钮，九宫格切图能够让它们的边框不失真。
 
@@ -229,11 +229,11 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 打开 Font Maker，选择 `Dynamic`，然后点击 `Source` 选择你想要创建的动态字体。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/30.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/30.png)
 
 创建成功后会生成一个预制体，如果要使用的话就需要将字体属性切换至 NGUI，然后选择你刚刚创建的字体：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/31.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/31.png)
 
 ?> Font Maker 是可以用来创建动态字体的，不过一般来说是应该直接使用 Unity 的字体，这里只是做一个演示。
 
@@ -245,7 +245,7 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 创建一个精灵，在 UISprite 组件中可以看到 Widget 属性：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/32.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/32.png)
 
 `Pivot` 是控件的中心点，六个选项从左至右分别是：左、水平居中、右、上、垂直居中、下。中心点代表的是控件的位置，如果它的中心点不同，坐标其实是不一样的（哪怕控件的位置看起来是一样的）：
 
@@ -267,13 +267,13 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 想要使用锚点很简单。创建一个精灵，它的属性栏中就有 `Anchors` 属性：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/33.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/33.png)
 
 假设这是一张背景图，那么为了让背景铺满整个摄像机，一般来说有两种做法。第一种是把背景图做大一些，保证摄像机的尺寸不会超过背景图。这一种做法的好处是不会让背景的比例失衡，不过我们这里介绍的是另外一种做法。
 
 将锚点的 `Type` 属性设置为 `Unified`，属性栏变成了下面这样：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/34.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/34.png)
 
 `Target` 代表的是参照物，为了让背景图与 UI 界面一样大，锚点的参照物就选择为 UIRoot。接下来的四个属性其实比较相似，分别代表了精灵的上下左右边框距离参照物中心点（Taget's Center）的距离。这个时候如果你再拖动游戏窗口，背景图就始终是位于中心点的，并且尺寸是保持不变。
 
@@ -281,15 +281,15 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 说回正题，如何让背景图的尺寸与 UI 界面保持同步呢？试着把上下左右边框的设置改为下面这样：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/35.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/35.png)
 
 这样一看似乎有道理，毕竟背景图的边框与 UI 界面的距离不变，想必也会随着相机的尺寸进行变化吧？
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/36.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/36.png)
 
 喔，似乎有哪里出现问题了？其实仔细想想就能够明白，为了让背景图与相机的距离保持不变，那么当相机尺寸变化时，势必就要影响背景图的尺寸。正确的做法应该是这样：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/37.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/37.png)
 
 非常好，效果达到了。
 
@@ -297,11 +297,11 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 有了背景图，接下来试着做一个小地图吧：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/38.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/38.png)
 
 小地图应该始终位于右上角，并且尺寸保持不变。为了达到这一点，那么左右边框距离参考物右边框的距离应该不变，上下边框距离参考物上边框的距离应该不变。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/39.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/39.png)
 
 效果也是很棒的。
 
@@ -311,17 +311,17 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 进度条是位于窗口中心的，它的长度应该保持不变，且距离相机下边框的距离也不变：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/40.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/40.png)
 
 效果如下：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/41.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/41.png)
 
 ### 高级模式
 
 到此为止，锚点的基本使用想必你已经掌握了。其实除了 Unified，锚点还有 `Advanced`（高级）模式：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/42.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/42.png)
 
 看到了吗？每一个边框都能够设置自己的参照物，对于复杂的 UI 界面应该是足以胜任了。
 
@@ -335,7 +335,7 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 还是先创建一个标签，然后右键选择 `Tween` -> `Alpha`：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/43.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/43.png)
 
 简单地介绍一下 Tween Alpha 组件：
 
@@ -350,23 +350,23 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 Tween Alpha 可以让标签从透明变为不透明：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/44.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/44.png)
 
 顺带一提，动画曲线的横坐标为时间，纵坐标为数值（根据具体情况决定，在这里是透明度）：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/45.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/45.png)
 
 ### 颜色
 
 Tween Color 的用法也是一目了然的：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/46.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/46.png)
 
 ### 宽度
 
 Tween Width 可以改变控件的宽度，不过要注意的是，如果你使用的是文本框，那么你就得保证文本框的大小足以容纳文本内容（不要设置为 Resize Freely）。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/47.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/47.png)
 
 ### 高度
 
@@ -384,7 +384,7 @@ Tween Scale 用于改变控件的缩放倍数。
 
 改变位置的动画有两种。第一种是 Tween Position，可以让控件从某一位置移动到另一位置。第二种是 Tween Transform，它需要获取两个物体的 Transform 组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/48.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/48.png)
 
 比如我要让标签从左边的精灵移动到右边的精灵，那么只需要将两个精灵的 Transform 组件赋值给 Tween Transform 即可。
 
@@ -402,19 +402,19 @@ Tween Scale 用于改变控件的缩放倍数。
 
 一般来说，滑动条会有一个背景框和一个填充条。创建一个精灵，选择一张合适的图片，然后为其添加 `UISlider` 组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/49.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/49.png)
 
 为它创建一个子精灵，用来充当填充条：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/50.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/50.png)
 
 UISlider 组件中有一个 `Foreground` 属性，将这个子精灵指定给它：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/51.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/51.png)
 
 这样，我们就非常轻松的制作了一个滑动条：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/52.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/52.png)
 
 ?> 滑动条由 `Foreground`、`Background`、`Thumb` 组成。
 
@@ -422,7 +422,7 @@ UISlider 组件中有一个 `Foreground` 属性，将这个子精灵指定给它
 
 在上述例子中，我是直接把 `Slider` 对象当做了背景。如果你想要做的正式一点，那么可以为其添加一个子精灵，用以充当背景：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/53.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/53.png)
 
 ?> 由于背景是之后创建的，所以你得把填充条的 Depth 设置的高一些，避免被背景覆盖。
 
@@ -430,11 +430,11 @@ UISlider 组件中有一个 `Foreground` 属性，将这个子精灵指定给它
 
 假如我们想要确切的知道滑动条的数值，那么不妨制作一个标签：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/54.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/54.png)
 
 UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它，然后选择 `SetCurrentPercent` 方法。这样一来，当滑动条的数值改变时，标签就会自动显示这个数值所对应的百分比：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/55.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/55.png)
 
 ?> NGUI 帮我们封装了许多种方法，基本上不需要我们动手编写。
 
@@ -442,11 +442,11 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 为了让滑动条好看一些，我们需要为其添加一个滑块：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/56.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/56.png)
 
 效果如下：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/57.png)
 
 ?> Slider 还可以设置步长（Steps），用于控制滑块滑动的次数。比如你设置 5，那么滑块能够移动的位置就是 0%、25%、50%、75%、100%。
 
@@ -456,11 +456,11 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 还是先创建一个精灵，然后给它添加 `UIPopupList` 组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/63.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/63.png)
 
 想要添加新选项的话直接在文本框中输入即可。下图是运行效果：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/64.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/64.png)
 
 简单的介绍一下几个属性：
 
@@ -475,15 +475,15 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 下拉列表虽然有了，但是菜单项上依旧是什么都没有。创建一个标签，将它赋值给 On Value Change 属性：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/65.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/65.png)
 
 另外，我们要给菜单选项设置一个初始值：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/66.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/66.png)
 
 效果如下：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/67.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/67.png)
 
 ?> 我们还可以对选项的样式进行修改，比如选项的文本，还有鼠标挪动到选项上时出现的高光效果。
 
@@ -493,11 +493,11 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 复选框（Toggle）就是我们常见的勾选框，一般用于某些属性的开启与关闭。创建一个底框，为它添加 `UIToggle` 组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/68.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/68.png)
 
 光有底框还不行，我们还得添加一个“勾”。把创建好的精灵赋值给底框，一个单选框就做好了：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/69.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/69.png)
 
 ?> 除了直接添加精灵图片，复选框的效果还有很多种，比如添加动画。另外，`Transition` 属性可以设置勾选时的效果。
 
@@ -507,19 +507,19 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 步骤我就不多废话了，一个精灵做底框，一个标签作文本，组件使用的是 `UIInput`。将标签赋值给输入框组件后就能够使用：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/70.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/70.png)
 
 输入框有很多的样式可以设置，比如底框的类型、文本输入的形式，这些属性我就不一一介绍了。与其他控件类似，输入框也有两个响应事件：`OnSubmit`、`OnChange`，这两个分别代表了输入框在提交后的响应以及文本内容改变后的响应。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/71.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/71.png)
 
 当然，现在的文本框虽然能够输入文字，不过由于我们把标签的模式改成了 `Clamp Content`，所以当文本内容超出了文本框时，多余的内容会被截取掉。解决办法很简单，把 `Max Lines` 设置为 1 即可。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/72.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/72.png)
 
 效果和官方的没什么差别：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/73.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/73.png)
 
 ?> 当 `Max Lines` 为 0 时，标签是支持多行输入的，因此输入框内的文字并不会跟随着光标地移动而显示。
 
@@ -533,7 +533,7 @@ UISlider 组件有一个 `OnValueChange` 属性，你可以把标签赋值给它
 
 创建一个 `Scroll View`，如图：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/74.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/74.png)
 
 我在滚动视图下创建了一张大图片，用来充当需要滚动的页面。Scroll View 一共有两个组件，`UIPanel` 用来管理滚动区域的显示，而 `UIScrollView` 则是用来控制页面滚动的逻辑。
 
@@ -585,7 +585,7 @@ UIScrollView 用来控制滚动的效果，几个主要的属性如下：
 
 使用方法比较简单，直接为视窗下的子精灵添加一个 `UIDragScrollView` 组件即可。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/75.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/75.png)
 
 ## 可滚动的文本列表
 
@@ -595,7 +595,7 @@ UIScrollView 用来控制滚动的效果，几个主要的属性如下：
 
 创建一个标签，属性设置为 `Clamp Content`、左对齐。之后为其添加 `UITextList` 组件：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/76.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/76.png)
 
 UITextList 组件需要两个对象，一个是用于显示文本的标签，还有一个是滚动条（Scroll Bar）。由于 UITextList 在初始化时会清空文本，所以我们得额外写一个脚本来为其添加内容：
 
@@ -619,6 +619,6 @@ public class AddContent : MonoBehaviour {
 
 然后不断地按 A，之后你就可以用滚动条来查看前后的文本内容：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/77.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/NGUI%E5%9F%BA%E7%A1%80/77.png)
 
 ?> 如果你不想用滚动条的话，可以为标签添加 Box Collider，这样就能够直接拖拽文本列表。

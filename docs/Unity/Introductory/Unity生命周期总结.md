@@ -4,7 +4,7 @@
 
 下面这张图全面的描绘了Unity的整个生命周期：
 
-![](http://obkyr9y96.bkt.clouddn.com/monobehaviour_flowchart.svg)
+![](http://cdn.fantasticmiao.cn/monobehaviour_flowchart.svg)
 
 !> 注意，生命周期的每一阶段都是需要所有物体执行完毕后，才会进行下一步。例如当所有物体的 `Awake()` 执行完后，才会继续执行 `OnEnable()`。
 

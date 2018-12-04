@@ -16,7 +16,7 @@
 
 精灵的属性面板如下所示。注意，如果你对设置做出了更改，那么记得点击最下面的 `Apply` 按钮进行提交。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/01.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/01.png)
 
 简要的介绍一下基础属性，其它不常用的我就暂时不介绍了。
 
@@ -29,7 +29,7 @@
 
 关于切图的问题，我在其他的游戏案例中已经讲过很多了，这里就不再多说了。唯一需要注意的是，蓝色的矩形框负责裁切精灵，而绿色的矩形框则是用于精灵的九宫格切图，记得不要搞混了。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/MVC%E5%BC%80%E5%8F%91%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/06.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/MVC%E5%BC%80%E5%8F%91%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/06.png)
 
 ## Canvas
 
@@ -43,14 +43,14 @@ Canvas 画布就类似于 NGUI 中的 UIRoot，都是 UI 树的根节点。画�
 
 首先是 `Screen Space-Overlay`。在该模式下，画布会自动填满整个屏幕空间，并且画布是永远处于屏幕最上方的。如果屏幕尺寸被改变，画布将自动改变尺寸来匹配屏幕。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/02.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/02.png)
 
 * **Pixel Perfect**：勾选该选项将让像素一直保持清晰，最明显的效果就是不管屏幕分辨率如何变化，精灵的边缘都不会模糊。
 * **Sort Order**：用于指定画布的深度。
 
 其次就是 `Screen Space-Camera`。该模式与上一个类似，画布也会自动布满整个屏幕。不同的是，该模式的画布会被放置在某个摄像机前，所以需要你手动制定一个相机。在该模式下，画布会看起来绘制在一个与摄像机固定距离的平面上，所有 UI 元素都由该摄像机渲染，因此摄像机的设置会影响 UI 画面（比如相机的视角）。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/03.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/03.png)
 
 * **Render Camera**：用于渲染的相机。
 * **Plane Distance**：画布平面与相机的距离。
@@ -95,11 +95,11 @@ Image 是 UGUI 中用于显示图片的控件，所有的 UI 元素都是以矩�
 
 Image 组件中有一个 `Sprite` 属性，这个属性指向我们需要显示的图片。另外，由于 UI 是 2D 的，所以你需要把图片的贴图格式（Texture Type）修改成 `Sprite (2D and UI)`。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/04.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/04.png)
 
 `RectTransform` 中的 `Anchor` 属性是用来设置锚点的，效果类似于 NGUI 中的 `Anchor` 属性，但是要方便很多。`Anchor` 中有一个 `stretch` 属性，它主要是用来设置 UI 的拉伸方式，当然你也可以直接拖动锚点的四个小三角：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/05.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/05.png)
 
 在上图中，背景被设置为了四角拉伸，这样背景的尺寸就会保持和父对象一致。
 

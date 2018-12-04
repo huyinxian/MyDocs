@@ -18,11 +18,11 @@
 
 如下图，我把一张大图导入编辑器。现在我们可以将大图展开，自由地选取我们需要的精灵图片：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/01.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/01.png)
 
 当然，你也可以在属性栏中点击`Sprite Editor`来查看各个图片：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/02.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/02.png)
 
 ?> 为了能够直观地查看各项资源图片，建议各位把布局方式设置成`Defalut`。
 
@@ -40,13 +40,13 @@
 
 游戏的主角一共有三个动作：闲置、攻击、受伤，每一个动作都是由多张图片组合而成。在 Unity 中，你只需要选中多张图片，并将它们拖动到`Hierarchy`中，便能够生成一个动画。这里我们先选中所有和闲置动作有关的图片，然后将它们拖入到`Hierarchy`中：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/04.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/04.png)
 
 如果没有操作错误的话，你应该能在资源窗口中看到上面这两个文件（记得修改一下名字）。`Player`是一种动画状态机（Animator Controller），用于控制物体的动作逻辑，而`PlayerIdle`则是动画（Animation），包含了一个动作的所有动画帧。
 
 点开`Player`，得到如下窗口：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/05.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/05.png)
 
 图中的窗口便是动画状态机了，里面的四个方块则代表了角色的行为逻辑。这里我简单地介绍一下这四个部分：
 
@@ -57,7 +57,7 @@
 
 光有了一个动作还不行，我们还需要为主角添加攻击和受伤两个动作。由于我们已经创建了一个动画对象`Player`，所以我们可以直接把两个动作相关的图片拖动到`Hierarchy`中的对象上：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/07.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/07.png)
 
 如上图，此时主角的动作就全部添加完成了。我们把主角制作成预制体，然后删除掉原本的对象。
 
@@ -71,27 +71,27 @@
 
 你可能会觉得奇怪，为什么我要把新加入的两个动作给删除？很简单，因为当前的状态机是 Enemy1 的，我们需要为 Enemy2 重写一个状态机，然后才能将 Enemy2 的动作添加进来。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/09.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/09.png)
 
 如上图，创建一个重写的动画状态机（Animator Override Controller），将重写的对象指定为 Enemy1 的状态机，然后将 Enemy2 的两个动作赋值给`Enemy1Idle`和`Enemy1Attack`。这一步的操作就相当于把 Enemy1 的动作替换成了 Enemy2 的，但是行为逻辑是和 Enemy1 的一模一样，且会随着 Enemy1 的改变而改变。
 
 Enemy2 的状态机写好了，但别忘了要修改一下 Enemy2 的属性：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/08.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/08.png)
 
 因为 Enemy2 只是改了个名字，图片还是用的 Enemy1 的，所以要记得换一下图片：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/10.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/10.png)
 
 这样，主角与敌人的预制体就创建好了：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/11.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/11.png)
 
 ### 墙壁、地板、食物
 
 这些东西是不需要动画的，直接将它们制作成预制体即可：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/12.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/12.png)
 
 ## 渲染顺序
 
@@ -101,7 +101,7 @@ Enemy2 的状态机写好了，但别忘了要修改一下 Enemy2 的属性：
 * Items：物品层。包含 Food、Soda、Wall。
 * Role：角色层。包含 Player、Enemy1、Enemy2。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/17.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/17.png)
 
 如果不分层次结构的话，地板很有可能会把障碍物、食物等物体遮盖住。
 
@@ -110,13 +110,13 @@ Enemy2 的状态机写好了，但别忘了要修改一下 Enemy2 的属性：
 ---------
 以主角为例，他会在最开始时重复播放闲置动画。当他攻击或者受伤时，都会播放对应的动画，然后马上切换回闲置状态。明白了这一点后，想必你大概知道怎么设计了。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/24.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/24.png)
 
 主角的状态机基本上就是这样了。不过还没完，我们得为攻击动作和受伤动作添加`Trigger`，以便我们能在代码中调用它们。
 
 ?> 关于如何创建和调用 Trigger，请转到——[Animation Parameters](https://docs.unity3d.com/2017.4/Documentation/Manual/AnimationParameters.html)
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/26.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/26.png)
 
 如上图，我们需要对每个分支做修改。由于攻击和受伤状态的逻辑是一样的，所以我这里只演示对攻击状态的修改。
 
@@ -128,11 +128,11 @@ Enemy2 的状态机写好了，但别忘了要修改一下 Enemy2 的属性：
 
 受伤状态与攻击状态是类似的，只需要跟着上面的步骤来即可。顺带一提，如果你想要预览动画的切换效果，你可以点击某个分支，然后把`Player`拖动到编辑器右下角的窗口中：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/27.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/27.png)
 
 或者你也可以直接运行游戏，然后点击两个动作来查看效果：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/28.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/28.png)
 
 ## 关卡结构
 
@@ -156,7 +156,7 @@ public GameObject[] outerWallTiles;    // 围墙集合
 
 赋值就是将预制体直接拖到某一集合下（为了拖拽方便，记得先把属性栏锁上）。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/13.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/13.png)
 
 预制体的实例化用的是下面这两行代码：
 
@@ -175,7 +175,7 @@ instance.transform.SetParent (boardHolder);
 
 我在这里要说明一下，`boardHolder`是一个空对象，实例化的对象都存储在这个空对象中，以免层次结构混乱。（不过我看了一下，官方的源码中似乎只把地板和围墙加入了 boardHolder）
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/2Dproject-Roguelike/16.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/2Dproject-Roguelike/16.png)
 
 官方源码为了减少重复的部分，将部分功能写成了方法，比如`RandomPosition()`是用来获取一个随机的位置；`LayoutObjectAtRandom()`是根据传入的集合随机选取一个预制体进行实例化，并且能够设置物体数量的范围，增加了关卡的随机性。
 

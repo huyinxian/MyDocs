@@ -37,7 +37,7 @@
 * **DataMediator**：视图层，显示玩家的界面。
 * **StartGame**：游戏的入口。
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/%E5%88%9D%E8%AF%86PureMVC/01.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/%E5%88%9D%E8%AF%86PureMVC/01.png)
 
 首先是模型层。由于我们这个程序很简单，当用户点击按钮后数字增加，所以模型层就只有一个数据：
 
@@ -251,7 +251,7 @@ namespace PureMVCDemo
 
 运行起来，效果如下：
 
-![](http://obkyr9y96.bkt.clouddn.com/image/post/U3D/%E5%88%9D%E8%AF%86PureMVC/02.png)
+![](http://cdn.fantasticmiao.cn/image/post/U3D/%E5%88%9D%E8%AF%86PureMVC/02.png)
 
 ## 总结
 
