@@ -237,11 +237,11 @@ Atlas Maker 会自动检测图集中的图片，如果图集中没有就会添�
 
 ?> Font Maker 是可以用来创建动态字体的，不过一般来说是应该直接使用 Unity 的字体，这里只是做一个演示。
 
-## Widget（小部件）
+## Widget
 
 ---
 
-每个 NGUI 组件都有一个 Widget 属性。它相当于一个容器，用于管理控件的位置和大小。
+Widget 相当于一个容器，是不可见的，主要用于管理控件的位置和大小。一般来说，`UIWidget` 是所有 UI 的基类，比如 UISprite、UILabel 等等。
 
 创建一个精灵，在 UISprite 组件中可以看到 Widget 属性：
 
