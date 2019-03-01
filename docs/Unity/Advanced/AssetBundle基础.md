@@ -114,7 +114,7 @@ BuildPipeline.BuildAssetBundles(ABOutputPath, BuildAssetBundleOptions.ChunkBased
 
 AssetBundle 中是不能包含脚本的，虽然它可以作为文本资源（TextAsset）的形式存在，但是这样一来就不能够执行代码了。如果我们想在包中加入脚本，并且希望脚本在程序中执行，那么脚本就需要被编译为程序集，然后用反射来加载脚本（使用 AOT 进行编译的平台不行，例如 IOS）。
 
-如果你想要做到真正的热更新，那么还是建议使用类似于 Lua 的解释型语言进行开发。
+如果你想要做到真正的热更新，那么还是建议使用诸如 Lua 的解释型语言进行开发。
 
 ### 不要随意删除manifest
 
