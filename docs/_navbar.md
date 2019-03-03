@@ -6,6 +6,7 @@
 * [**学习笔记**](StudyNote/CSharp/)
     * [C#](StudyNote/CSharp/)
     * [C++](StudyNote/C++/)
+* [**关于我**](About/实习总结)
 * [**链接**](https://github.com/huyinxian)
     * [GitHub](https://github.com/huyinxian)
     * [老博客](http://fantasticmiao.cn/)
