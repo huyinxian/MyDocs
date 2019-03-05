@@ -113,7 +113,7 @@ end})
 classA = { value = 0 }
 
 function classA:new(o)
-    local o = o or {}             -- 如果没有提供对象，就自行创建
+    local o = o or {}       -- 如果没有提供对象，就自行创建
     setmetatable(o, self)   -- 将o的元表设置为classA
     self.__index = self     -- 这一步很关键，我们可以通过元表来访问classA
     return o
