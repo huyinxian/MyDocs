@@ -11,6 +11,8 @@
     * [NGUI基础](Unity/Introductory/NGUI基础)
     * [NGUI的使用](Unity/Introductory/NGUI的使用)
     * [NGUI基础案例](Unity/Introductory/NGUI基础案例)
+* **光照**
+    * [光照基础](Unity/Introductory/光照基础)
 * **游戏案例**
     * [拾荒者](Unity/Introductory/2DRoguelike游戏拾荒者)
     * [坦克大战](Unity/Introductory/坦克大战)
