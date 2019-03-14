@@ -1,9 +1,11 @@
 * **游戏框架**
     * [MVC开发俄罗斯方块](Unity/Advanced/MVC开发俄罗斯方块)
     * [初识PureMVC](Unity/Advanced/初识PureMVC)
+    * [PureMVC解读](Unity/Advanced/PureMVC解读)
     * [资源加载框架](Unity/Advanced/资源加载框架)
 * **进阶部分**
     * [Unity中的Lua](Unity/Advanced/Unity中的Lua)
     * [AssetBundle基础](Unity/Advanced/AssetBundle基础)
     * [打包问题汇总](Unity/Advanced/打包问题汇总)
     * [网络编程基础](Unity/Advanced/网络编程基础)
+    * [设计模式](Unity/Advanced/设计模式)
