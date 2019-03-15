@@ -33,7 +33,7 @@ Notification 采用的是观察者模式，Proxy、Mediator、Command、Facade �
 * 触发 Command：Facade 中保存了 Command 与 Notification 的映射，当 Notification 被发送时，对应的 Command 将会被自动执行。Command 主要是为了实现复杂的操作，降低模型与视图的耦合。
 * 通知 Mediator：Mediator 可以发送、注册、接收 Notification。每一个 Mediator 都会事先注册一组感兴趣的通知，当对应的通知发生时，Mediator 就会进行接收，并做出相应的处理。
 
-需要注意的是，虽然 Proxy 可以发送通知，但是它不接收通知。不理解的话可以这么想：当 Proxy 从远程服务收到数据时，它需要通知系统；当 Proxy 的数据被更改时，它也需要进行通知。但如果我们让 Proxy 接收通知，那势必就会导致它和视图、控制器进行耦合。
+需要注意的是，虽然 Proxy 可以发送通知，但是它不接收通知，接收通知的是 Command 和 Mediator。不理解的话可以这么想：当 Proxy 从远程服务收到数据时，它需要通知系统；当 Proxy 的数据被更改时，它也需要进行通知。但如果我们让 Proxy 接收通知，那势必就会导致它和视图、控制器进行耦合。
 
 视图层之所以要监听 Proxy 发送的通知，是因为它的职责就是通过可视化的界面使得用户可以与模型层进行交互，但是视图不能够反过来影响模型层的数据。因此，Proxy 不能接收通知的，只能够在 Command 中进行操作。
 
