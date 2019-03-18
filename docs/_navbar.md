@@ -7,6 +7,7 @@
     * [C#](StudyNote/CSharp/)
     * [C++](StudyNote/C++/)
     * [操作系统](StudyNote/操作系统/)
+    * [编译原理](StudyNote/编译原理/)
 * [**关于我**](About/实习总结)
 * [**链接**](https://github.com/huyinxian)
     * [GitHub](https://github.com/huyinxian)
