@@ -126,3 +126,35 @@ print(myClass.value)
 我们来看看上述代码都干了些什么。首先，我们定义了一个表 `classA`，然后为其添加了一个变量 `value`。随后我们为这个表定义了一个方法 `new`，然后创建了一个空表。为了能够访问 `classA`，我们需要把空表 `o` 的元表设置为 `classA`，并且把元表的 `__index` 键设置为 `classA`。这样一来，当我们访问 `o` 时，由于它是一个空表，自然就会到元表中去寻找元素，从而达到了访问 `classA` 的目的。
 
 我之前也有说过，任何表都可作为其他表的元表，自身也可以成为自身的元表，上述代码就是借助了这一概念。另外，如果子类自己定义了与父类同名的变量或者方法，就会覆盖掉父类的变量和方法（因为只有当子类找不到索引时才会去查询元表）。
+
+### 协程
+
+协程与线程比较类似，拥有独立的堆栈，独立的局部变量，独立的指令指针等。它与线程的区别在于，多个协同程序需要彼此协作执行，也就是说任意时刻只能够有一个协程在执行，并且这个在运行的协程只有被明确要求挂起时才会被挂起。
+
+协程的基本语法如下：
+
+* coroutine.create()：创建协程，并返回这个协程，参数为一个函数。
+* coroutine.resume()：启动协程。
+* coroutine.yield()：挂起协程，并将参数返回。
+* coroutine.status()：查看协程的状态。有 dead，suspend，running 三种。
+* coroutine.wrap()：创建协程，并返回一个函数，参数为一个函数。
+* coroutine.running()：返回正在执行的协程。协程也是一个线程，返回的是协程的线程号。
+
+先来看一个例子：
+
+```lua
+co = coroutine.create(function (a)
+    local r = coroutine.yield(a + 1)    -- yield()返回a+1给调用它的resume()函数，即2
+    print("r=" ..r)                     -- r的值是第2次resume()传进来的，100
+end)
+status, r = coroutine.resume(co, 1)     -- resume()返回两个值，一个是自身的状态true，一个是yield的返回值2
+coroutine.resume(co, 100)               -- resume()返回true
+```
+
+resume 用于启动协程，它会默认返回一个 boolean 值，用于表示协程是否启动成功。如果调用的协程中有 yield 方法，那么它还会返回 yield 的参数。
+
+yield 用于挂起协程，在上述的例子中，协程在第一次启动时，会运行到 `local r = coroutine.yield(a + 1)` 时挂起。当我们再次启动协程时，才会执行后面的 `print("r=" ..r)`。
+
+协程有三个状态，当协程创建时，其状态默认为 `suspend`；当协程被 resume 调用时，协程的状态为 `running`；当协程被挂起时，其状态改为 `suspend`；当协程中的方法执行到 `return` 语句时，就会转入 `dead` 状态，同时返回 return 的值。协程变为 `dead` 状态后无法再重新启动。
+
+需要注意的是，创建协程的方法有 create 和 wrap，但是这两者是略有不同的。create 会返回一个协程，必须使用 resume 才能将其启动。而 wrap 则是返回一个函数，当调用函数时协程就会启动。
