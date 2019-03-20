@@ -4,3 +4,4 @@
     * [指针](StudyNote/C++/指针)
     * [类](StudyNote/C++/类)
     * [内存分配总结](StudyNote/C++/内存分配总结)
+    * [sizeof](StudyNote/C++/sizeof)
