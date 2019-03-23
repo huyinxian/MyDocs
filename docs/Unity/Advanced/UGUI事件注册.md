@@ -309,7 +309,7 @@ public class ScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDr
 }
 ```
 
-看到了吗，ScrollRect 的拖拽也是通过这几个接口实现的，所以才会导致事件冲突。我在开头介绍了 Button 最常见的一种注册方法，那就是通过 Button 自己封装的 OnClick 事件：
+看到了吗，ScrollRect 的拖拽也是通过这几个接口实现的，所以才会导致事件冲突。我在开头介绍了 Button 最常见的一种注册方法，那就是使用 Button 自己封装的 OnClick 事件：
 
 ```csharp
 button.onClick.AddListener(TestCallback);
