@@ -12,7 +12,7 @@ Shader 并没有特别之处，它只是一段规定好输入（颜色，贴图�
 
 ---
 
-UnityShader 并不是指真正的 Shader，它通常是指 `ShaderLab` 文件，也就是一种以 `.shader` 结尾的文件。
+UnityShader 并不是指真正的 Shader，它通常是指 `ShaderLab` 文件，也就是一种以 `.shader` 结尾的文件。Unity 中需要把材质和 Shader 文件进行结合使用。
 
 传统 Shader 与 UnityShader 的区别：
 
