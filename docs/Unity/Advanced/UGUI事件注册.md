@@ -105,27 +105,27 @@ public class UIMain : MonoBehaviour {
 
 ```csharp
 public class EventTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IScrollHandler, IUpdateSelectedHandler, ISelectHandler, IDeselectHandler, IMoveHandler, ISubmitHandler, ICancelHandler, IEventSystemHandler
-    {
-        // 这里的都是从元数据，没有源代码，看不到具体实现
-        public virtual void OnBeginDrag(PointerEventData eventData);
-        public virtual void OnCancel(BaseEventData eventData);
-        public virtual void OnDeselect(BaseEventData eventData);
-        public virtual void OnDrag(PointerEventData eventData);
-        public virtual void OnDrop(PointerEventData eventData);
-        public virtual void OnEndDrag(PointerEventData eventData);
-        public virtual void OnInitializePotentialDrag(PointerEventData eventData);
-        public virtual void OnMove(AxisEventData eventData);
-        public virtual void OnPointerClick(PointerEventData eventData);
-        public virtual void OnPointerDown(PointerEventData eventData);
-        public virtual void OnPointerEnter(PointerEventData eventData);
-        public virtual void OnPointerExit(PointerEventData eventData);
-        public virtual void OnPointerUp(PointerEventData eventData);
-        public virtual void OnScroll(PointerEventData eventData);
-        public virtual void OnSelect(BaseEventData eventData);
-        public virtual void OnSubmit(BaseEventData eventData);
-        public virtual void OnUpdateSelected(BaseEventData eventData);
-        // 具体部分省略...
-    }
+{
+    // 这里的都是从元数据，没有源代码，看不到具体实现
+    public virtual void OnBeginDrag(PointerEventData eventData);
+    public virtual void OnCancel(BaseEventData eventData);
+    public virtual void OnDeselect(BaseEventData eventData);
+    public virtual void OnDrag(PointerEventData eventData);
+    public virtual void OnDrop(PointerEventData eventData);
+    public virtual void OnEndDrag(PointerEventData eventData);
+    public virtual void OnInitializePotentialDrag(PointerEventData eventData);
+    public virtual void OnMove(AxisEventData eventData);
+    public virtual void OnPointerClick(PointerEventData eventData);
+    public virtual void OnPointerDown(PointerEventData eventData);
+    public virtual void OnPointerEnter(PointerEventData eventData);
+    public virtual void OnPointerExit(PointerEventData eventData);
+    public virtual void OnPointerUp(PointerEventData eventData);
+    public virtual void OnScroll(PointerEventData eventData);
+    public virtual void OnSelect(BaseEventData eventData);
+    public virtual void OnSubmit(BaseEventData eventData);
+    public virtual void OnUpdateSelected(BaseEventData eventData);
+    // 具体部分省略...
+}
 ```
 
 EventTrigger 继承了一堆接口，并以虚方法的形式对它们进行了实现。这些接口能够通过命名来看出其功能，比如点击按下、点击抬起、开始拖拽、结束拖拽等等。如果我们按照上面的那种方式注册事件，那么就会在注册事件时给 UI 添加 EventTriggerListener。由于 EventTriggerListener 继承自 EventTrigger，而 EventTrigger 实现了所有的事件接口，那么就意味着这个 UI 会接收所有的事件（点击、拖拽等等）。
