@@ -77,25 +77,62 @@ myTable.MyPrint(myTable.key)
 
 ### 元表
 
-什么是元表呢？你可以把它理解为 table 的附加物或者背包，当 table 中找不到元素时，就会到它的元表中去寻找：
+什么是元表呢？你可以把它理解为 table 的附加物或者背包，当 table 中找不到元素时，就会到它的元表中去寻找。元表中有许多特殊的元方法，可以为我们实现不同的功能。
+
+处理元表的两个重要函数如下：
+
+* setmetatable(table,metatable)：将 metatable 设置为 table 的元表。如果 metatable 中已经存在 _metatable 键值，那么 setmettable 会失败。
+* getmetatable(table)：返回 table 的元表。
+
+接下来开始介绍元表中的元方法。首先，最常用的是 `__index`。当你通过键来访问 table 时，假如这个键没有值，那么 Lua 就会寻找该 table 的元表中的 __index。如果 __index 是一个表，那么 Lua 就会在表中寻找相应的键；如果 __index 是一个函数，Lua 就会调用该函数，table 和键可以作为参数传递给函数。
 
 ```lua
-newTable = { key = "value" }
+newTable = { key1 = "value" }
 
-setmetatable(newTable, { __index = function()
+setmetatable(newTable, { __index = function(myTable, key)
     print("__index")
 end})
 ```
 
-`__index` 是元表中最常用的键，当你通过键来访问 table 时，假如这个键没有值，那么 Lua 就会寻找该 table 的元表中的 __index 键。如果 __index 包含一个表，那么 Lua 就会在表中寻找相应的键；如果 __index 包含一个函数，Lua 就会调用该函数，table 和键可以作为参数传递给函数。
-
 总而言之，Lua 在查找一个表时分为以下步骤：
 
-* 在表中查找元素，如果找到就返回该元素，找不到则继续下面的步骤
-* 判断该表是否有元表，没有元表返回 nil，有的话就继续
-* 判断元表中有没有 __index 键，如果 __index 是一个方法，那么调用它；如果 __index 是一个表，则重复上述步骤
+* 在表中查找元素，如果找到就返回该元素，找不到则继续。
+* 判断该表是否有元表，没有元表返回 nil，有的话就继续。
+* 判断元表中有没有 __index，如果 __index 是一个方法，那么调用它；如果 __index 是一个表，那么重复上述步骤。
 
-?> 元表中除了 __index，其实还有其他的键，如果感兴趣各位可以自行了解。
+__index 用于表的访问，而 `__newindex` 则用于表的更新。如果你给表中的一个缺少的键赋值时，解释器会去查找 __newindex 方法，如果存在该方法则会调用它并且不会进行赋值操作：
+
+```lua
+newTable = {}
+metaTable = {
+    name = "123",
+    __newindex = function(table, key, value)
+        print(table)
+        print("查找的键不存在："..key.."，要赋予的值为："..value)
+    end
+}
+setmetatable(newTable, metaTable)
+```
+
+上述代码中，__newindex 被赋予了一个函数，该函数接收表、键、值三个参数。__newindex 可以用于监控表的赋值行为。
+
+`__tostring` 可以修改表的打印方式：
+
+```lua
+mytable = setmetatable({ 10, 20, 30 }, {
+  __tostring = function(mytable)
+    sum = 0
+    for k, v in pairs(mytable) do
+        sum = sum + v
+    end
+    return "表所有元素的和为 " .. sum
+  end
+})
+
+print(mytable)
+```
+
+?> 除了上述几种，还有可以改变表之间运算方式的元方法，如果各位感兴趣可以自行了解。
 
 ### OOP
 
