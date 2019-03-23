@@ -291,3 +291,28 @@ public class UIDragEvent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 ```
 
 如果你想要添加长按等逻辑，那么你可以在对应的事件中进行修改，用起来非常灵活。
+
+### 不是很推荐的解决方法
+
+之所以继承 EventTrigger 会造成 ScrollRect 和 Button 冲突，是因为 EventTrigger 和 ScrollRect 都实现了相同的接口。我们来看一下 ScrollRect 的实现：
+
+```csharp
+public class ScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement, ILayoutElement, ILayoutGroup, IEventSystemHandler, ILayoutController
+{
+    // 具体实现看不到，省略
+    public virtual void OnBeginDrag(PointerEventData eventData);
+    public virtual void OnDrag(PointerEventData eventData);
+    public virtual void OnEndDrag(PointerEventData eventData);
+    public virtual void OnInitializePotentialDrag(PointerEventData eventData);
+    public virtual void OnScroll(PointerEventData data);
+    // ...
+}
+```
+
+看到了吗，ScrollRect 的拖拽也是通过这几个接口实现的，所以才会导致事件冲突。我在开头介绍了 Button 最常见的一种注册方法，那就是通过 Button 自己封装的 OnClick 事件：
+
+```csharp
+button.onClick.AddListener(TestCallback);
+```
+
+如果 Button 使用这种方式进行监听，那么就不会与 ScrollRect 冲突了。不过呢，当你要对按下、抬起、长按等操作进行识别时，你其实还是要去继承对应接口，也就是说最好用的方法依旧是分离式做法。
