@@ -93,7 +93,7 @@ Canvas 画布就类似于 NGUI 中的 UIRoot，都是 UI 树的根节点。画�
 
 Image 是 UGUI 中用于显示图片的控件，所有的 UI 元素都是以矩形来表现的，因此 UGUI 的控件都会带有 `RectTransform` 组件。如果你想要显示一个精灵图片，还请使用 Image 控件。
 
-Image 组件中有一个 `Sprite` 属性，这个属性指向我们需要显示的图片。另外，由于 UI 是 2D 的，所以你需要把图片的贴图格式（Texture Type）修改成 `Sprite (2D and UI)`。
+Image 组件中有一个 `Sprite` 属性，这个属性指向我们需要显示的图片。另外，由于 UI 是 2D 的，所以你需要把图片的纹理格式（Texture Type）修改成 `Sprite (2D and UI)`。
 
 ![](http://cdn.fantasticmiao.cn/image/post/U3D/UGUI%E5%9F%BA%E7%A1%80/04.png)
 
