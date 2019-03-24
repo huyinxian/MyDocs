@@ -235,3 +235,52 @@ Shader "Custom/SimpleShader"
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%9903.png)
 
 这样一来我们就可以直接在材质面板中更改颜色。
+
+## Unity内置文件和变量
+
+---
+
+Unity 提供了许多内置文件，里面包含了函数、变量、宏等，可以帮助我们快速编码。这种文件类似于 C++ 头文件，在 Untiy 中它们的后缀为 `.cginc`。使用方式很简单：
+
+```
+CGPROGRAM
+#include "UnityCG.cginc"
+ENDCG
+```
+
+在 Windows 上，这些文件的路径是：Unity的安装路径/Data/CGIncludes。
+
+下面给出几个主要的文件以及其用处：
+
+| <center>文件名</center> | <center>描述</center> |
+| :--- | :--- |
+| UnityCG | 包含了最常用的帮助的函数、宏、结构体等 |
+| UnityShaderVariables | 编译 UnityShader 时会自动包含进来，内置了许多全局变量，比如 UNITY_MATRIX_MVP |
+| Lighting | 包含了各种光照模型，编写表面着色器时会自动包含进来 |
+| HLSLSupport | 编译 UnityShader 时会自动包含进来，内置了许多跨平台编译的宏和定义 |
+
+下面给出一些 `UnityCG.cginc` 中常用的结构体和变量：
+
+| <center>名称</center> | <center>描述</center> | <center>包含的变量</center> |
+| :--- | :--- | :--- |
+| appdata_base | 顶点着色器的输入 | 顶点位置、法线、第一组纹理坐标 |
+| appdata_tan | 顶点着色器的输入 | 顶点位置、切线、法线、第一组纹理坐标 |
+| appdata_full | 顶点着色器的输入 | 顶点位置、切线、法线、四组（或更多）纹理坐标 |
+| appdata_img | 顶点着色器的输入 | 顶点位置、第一组纹理坐标 |
+| v2f_img | 顶点着色器的输出 | 裁剪空间中的位置、纹理坐标 |
+
+| <center>函数名</center> | <center>描述</center> |
+| :--- | :--- |
+| float3 WorldSpaceViewDir(float4 v) | 输入一个模型空间的顶点位置，返回世界空间中从该点到摄像机的观察方向 |
+| float3 ObjSpaceViewDir(float4 v) | 输入一个模型空间的顶点位置，返回模型空间中从该点到摄像机的观察方向 |
+| float3 WorldSpaceLightDir(float4 v) | 仅用于前向渲染。输入一个模型空间的顶点位置，返回世界空间中从该点到光源的光照方向。未进行归一化 |
+| float3 ObjSpaceLightDir(float4 v) | 仅用于前向渲染。输入一个模型空间的顶点位置，返回模型空间中从该点到光源的光照方向。未进行归一化 |
+| float3 UnityObjectToWorldNormal(float3 norm) | 把法线方向从模型空间转换到世界空间 |
+| float3 UnityObjectToWorldDir(float3 dir) | 把方向矢量从模型空间变换到世界空间 |
+| float3 UnityWorldToObjectDir(float3 dir) | 把方向矢量从世界空间变换到模型空间 |
+
+## Unity提供的Cg/HLSL语义
+
+---
+
+我们在之前的代码编写中用到了不少的语义。
