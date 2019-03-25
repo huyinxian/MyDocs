@@ -195,3 +195,195 @@ yield 用于挂起协程，在上述的例子中，协程在第一次启动时�
 协程有三个状态，当协程创建时，其状态默认为 `suspend`；当协程被 resume 调用时，协程的状态为 `running`；当协程被挂起时，其状态改为 `suspend`；当协程中的方法执行到 `return` 语句时，就会转入 `dead` 状态，同时返回 return 的值。协程变为 `dead` 状态后无法再重新启动。
 
 需要注意的是，创建协程的方法有 create 和 wrap，但是这两者是略有不同的。create 会返回一个协程，必须使用 resume 才能将其启动。而 wrap 则是返回一个函数，当调用函数时协程就会启动。
+
+## Lua面向对象的探究
+
+---
+
+上面我简单地介绍了一下 Lua 是如何实现类的，不过那种简单的写法体会不到面向对象的好处。下面我将介绍一下比较优秀的 Lua 类实现。
+
+下面的代码是由云风大大实现的：
+
+```lua
+local _class={}
+function class(super)
+    local class_type={}
+    class_type.ctor     = false
+    class_type.super    = super
+    class_type.new      = 
+        function(...)
+            local obj={}
+            do
+                local create
+                create = function(c,...)
+                    if c.super then
+                        create(c.super,...)
+                    end
+                    if c.ctor then
+                        c.ctor(obj,...)
+                    end
+                end
+
+                create(class_type,...)
+            end
+            -- 把该类的vtbl表设置为实例对象obj的元表
+            setmetatable(obj,{ __index = _class[class_type] })
+            return obj
+        end
+    local vtbl={}
+    _class[class_type]=vtbl
+
+    -- 当为某个类赋新值时，会把值存到该类对应的vtbl表中
+    setmetatable(class_type,{__newindex=
+        function(t,k,v)
+            vtbl[k]=v
+        end
+    })
+    
+    -- 如果vtbl表中不存在某对象，那么就到父类中找（其实是在父类的vtbl中），找到了之后把结果拷贝到vtbl中，以供下次使用
+    if super then
+        setmetatable(vtbl,{__index=
+            function(t,k)
+                local ret=_class[super][k]
+                vtbl[k]=ret
+                return ret
+            end
+        })
+    end
+
+    return class_type
+end
+```
+
+首先看 new 函数，每个 class 都会自动生成该函数，用于类的实例化。new 函数中定义了一个 create 方法，该方法会先调用父类的 ctor（构造方法），然后再调用子类的 ctor。ctor 需要传入 obj 作为参数，而 obj 就是 new 方法中最开始定义的一个空表，所有 ctor 中定义的变量（包括父类 ctor 中定义的）都会创建在 obj 中。这种做法的好处就是在 ctor 中定义的变量会在 obj 中创建（包括父类），而不在 ctor 中定义的变量则不会在 obj 中创建（不理解的话可以接着往下看）。new 函数的结尾定义了 obj 的元表，可能有人对于 ` _class[class_type]` 不太理解。不用急，下面就会解释。
+
+我们接着看 vtbl 表。这个表有点类似 C++ 的虚函数表，当对于 class_type 赋新值（_newindex）相当于直接在 vtbl 中赋值。我们在类中（class_type）添加任何变量和方法时，其实都是在 vtbl 中创建。由于实例对象的元表是 vtbl，因此实例对象可以访问到类中所有的方法和变量。
+
+我们再来看代码最后一部分，这一部分其实是为了实现继承的逻辑。举个例子，类 B 继承自类 A，而 B 中的 vtbl 只能够访问到 B 中添加的方法和变量，无法访问 A 中的方法。此时我们就只能为 vtbl 设置一个元表，当类 B 中不存在某变量或方法时，就去 B 的父类 A 中查找，如果父类也找不到就去父类的父类中找。`vtbl[k]=ret` 相当于把父类中查找到的结果拷贝到子类的 vtbl 中，避免下次查找相同值时又去搜索父类。
+
+需要注意的是，那些不在 ctor 中声明的变量会保存到类的 vtbl 中，因为该表是唯一的，因此类的所有实例化对象是共用这张表的。这有点类似静态变量，但又不完全是，因为在多重继承时，父类的 vtbl 结果会在子类访问时被拷贝一次（在 C++ 中父类和子类共用一个静态成员）。
+
+使用范例如下：
+
+```lua
+base_type=class()               -- 定义一个基类 base_type
+function base_type:ctor(x)      -- 定义 base_type 的构造函数
+    print("base_type ctor")
+    self.x=x
+end
+function base_type:print_x()    -- 定义一个成员函数 base_type:print_x
+    print(self.x)
+end
+function base_type:hello()      -- 定义另一个成员函数 base_type:hello
+    print("hello base_type")
+end
+
+test=class(base_type)       -- 定义一个类 test 继承于 base_type
+function test:ctor()        -- 定义 test 的构造函数
+    print("test ctor")
+end
+function test:hello()       -- 重载 base_type:hello 为 test:hello
+    --test.super:hello()
+    print("hello test")
+end
+
+a=test.new(2)   -- 输出两行，base_type ctor 和 test ctor。这个对象被正确的构造了。
+a:print_x()     -- 输出 1，这个是基类 base_type 中的成员函数。
+a:hello()       -- 输出 hello test ，这个函数被重载了。
+```
+
+再来说一下 ctor 的问题。从上面的代码中我们已经知道了，ctor 中定义的变量会直接保存在实例 obj 中，而不在 ctor 中定义的变量和方法则保存在 vtbl 中，供类的所有实例对象使用。这种做法的好处就是节省了复制类变量和方法所消耗的时间，比如你经常能够看到这种代码：
+
+```lua
+--Create an class.
+function class(classname, super)
+    local superType = type(super)
+    local cls
+
+    if superType ~= "function" and superType ~= "table" then
+        superType = nil
+        super = nil
+    end
+
+    if superType == "function" or (super and super.__ctype == 1) then
+        -- inherited from native C++ Object
+        cls = {}
+
+        if superType == "table" then
+            -- copy fields from super
+            for k,v in pairs(super) do cls[k] = v end
+            cls.__create = super.__create
+            cls.super    = super
+        else
+            cls.__create = super
+        end
+
+        cls.ctor    = function() end
+        cls.__cname = classname
+        cls.__ctype = 1
+
+        function cls.new(...)
+            local instance = cls.__create(...)
+            -- copy fields from class to native object
+            for k,v in pairs(cls) do instance[k] = v end
+            instance.class = cls
+            instance:ctor(...)
+            return instance
+        end
+
+    else
+        -- inherited from Lua Object
+        if super then
+            cls = clone(super)
+            cls.super = super
+        else
+            cls = {ctor = function() end}
+        end
+
+        cls.__cname = classname
+        cls.__ctype = 2 -- lua
+        cls.__index = cls
+
+        function cls.new(...)
+            local instance = setmetatable({}, cls)
+            instance.class = cls
+            instance:ctor(...)
+            return instance
+        end
+    end
+
+    return cls
+end
+```
+
+上述代码是 Cocos2dx 3.0 给出的 lua 类实现。代码中有这么一段：
+
+```lua
+if superType == "table" then
+    -- copy fields from super
+    for k,v in pairs(super) do cls[k] = v end
+    cls.__create = super.__create
+    cls.super    = super
+else
+    cls.__create = super
+end
+```
+
+这种实现方式是让子类继承父类时，把父类所有的对象拷贝到子类中，从此之后子类和父类再无联系了，子类调用的父类变量和函数都是拷贝过来的。如果此时子类再重载父类的同名函数，那么之后子类将再也无法调用到对应的父类函数了（因为拷贝过来的被覆盖了）。
+
+然后是它的实例化操作：
+
+```lua
+function cls.new(...)
+    local instance = cls.__create(...)
+    -- copy fields from class to native object
+    for k,v in pairs(cls) do instance[k] = v end
+    instance.class = cls
+    instance:ctor(...)
+    return instance
+end
+```
+
+发现问题了吗？是的，每次实例化的时候都要把类中所有的变量和方法全部拷贝给实例对象。如果这个类有父类的话，那么还得把父类的也拷贝一遍。
+
+在云风大大的代码中，**类中并不会创建任何成员**，因为添加类成员相当于给该类的 vtbl 表赋值（_newindex 被覆写了），而 vtbl 表对于所有的类对象来说是共用的。另外，ctor 中定义的变量是存到实例对象中的，也不会直接在类中创建，因此类中其实并没有创建任何的成员。比起上面那种每次实例化时都要把类成员拷贝一遍的方法，显然是云风大大的这种效率更高。
