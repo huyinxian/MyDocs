@@ -257,9 +257,9 @@ end
 
 首先看 new 函数，每个 class 都会自动生成该函数，用于类的实例化。new 函数中定义了一个 create 方法，该方法会先调用父类的 ctor（构造方法），然后再调用子类的 ctor。ctor 需要传入 obj 作为参数，而 obj 就是 new 方法中最开始定义的一个空表，所有 ctor 中定义的变量（包括父类 ctor 中定义的）都会创建在 obj 中。这种做法的好处就是在 ctor 中定义的变量会在 obj 中创建（包括父类），而不在 ctor 中定义的变量则不会在 obj 中创建（不理解的话可以接着往下看）。new 函数的结尾定义了 obj 的元表，可能有人对于 ` _class[class_type]` 不太理解。不用急，下面就会解释。
 
-我们接着看 vtbl 表。这个表有点类似 C++ 的虚函数表，当对于 class_type 赋新值（_newindex）相当于直接在 vtbl 中赋值。我们在类中（class_type）添加任何变量和方法时，其实都是在 vtbl 中创建。由于实例对象的元表是 vtbl，因此实例对象可以访问到类中所有的方法和变量。
+我们接着看 vtbl 表。当对于 class_type 赋新值相当于直接在 vtbl 中赋值。我们在类中（class_type）添加任何类成员时，其实都是在 vtbl 中创建。由于实例对象的元表是 vtbl，因此实例对象可以访问到类中所有的方法和变量。
 
-我们再来看代码最后一部分，这一部分其实是为了实现继承的逻辑。举个例子，类 B 继承自类 A，而 B 中的 vtbl 只能够访问到 B 中添加的方法和变量，无法访问 A 中的方法。此时我们就只能为 vtbl 设置一个元表，当类 B 中不存在某变量或方法时，就去 B 的父类 A 中查找，如果父类也找不到就去父类的父类中找。`vtbl[k]=ret` 相当于把父类中查找到的结果拷贝到子类的 vtbl 中，避免下次查找相同值时又去搜索父类。
+我们再来看代码最后一部分，这一部分其实是为了实现继承的逻辑。举个例子，类 B 继承自类 A，而 B 中的 vtbl 只能够访问到 B 中添加的方法和变量，无法访问 A 中的方法。此时我们就只能为 vtbl 设置一个元方法，当类 B 中不存在某变量或方法时，就去 B 的父类 A 中查找，如果父类也找不到就去父类的父类中找。`vtbl[k]=ret` 相当于把父类中查找到的结果拷贝到子类的 vtbl 中，避免下次查找相同值时又去搜索父类。
 
 需要注意的是，那些不在 ctor 中声明的变量会保存到类的 vtbl 中，因为该表是唯一的，因此类的所有实例化对象是共用这张表的。这有点类似静态变量，但又不完全是，因为在多重继承时，父类的 vtbl 结果会在子类访问时被拷贝一次（在 C++ 中父类和子类共用一个静态成员）。
 
@@ -387,3 +387,321 @@ end
 发现问题了吗？是的，每次实例化的时候都要把类中所有的变量和方法全部拷贝给实例对象。如果这个类有父类的话，那么还得把父类的也拷贝一遍。
 
 在云风大大的代码中，**类中并不会创建任何成员**，因为添加类成员相当于给该类的 vtbl 表赋值（_newindex 被覆写了），而 vtbl 表对于所有的类对象来说是共用的。另外，ctor 中定义的变量是存到实例对象中的，也不会直接在类中创建，因此类中其实并没有创建任何的成员。比起上面那种每次实例化时都要把类成员拷贝一遍的方法，显然是云风大大的这种效率更高。
+
+## Lua与C/C++交互
+
+---
+
+### Lua堆栈
+
+Lua 和 C/C++ 交互用的其实是 Lua 堆栈。栈的特点是先进后出，堆栈的索引可以是正数也可以是负数，但正数索引 1 永远表示栈底，负数索引 -1 永远表示栈顶。
+
+下面通过一个实例来解释上面这段话：
+
+```cpp
+#include <iostream>
+ 
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+ 
+using namespace std;
+ 
+int main()
+{
+    //创建Lua环境
+    lua_State* L=lua_open();
+    //打开Lua标准库,常用的标准库有luaopen_base、luaopen_package、luaopen_table、luaopen_io、
+    //luaopen_os、luaopen_string、luaopen_math、luaopen_debug
+    luaL_openlibs(L);
+    //压入一个数字20
+    lua_pushnumber(L,20);
+    //压入一个数字15
+    lua_pushnumber(L,15);
+    //压入一个字符串Lua
+    lua_pushstring(L,"Lua");
+    //压入一个字符串C
+    lua_pushstring(L,"C");
+    //获取栈元素个数
+    int n=lua_gettop(L);
+    //遍历栈中每个元素
+    for(int i=1;i<=n;i++)
+    {
+        cout << lua_tostring(L ,i) << endl;
+    }
+    return 0;
+}
+```
+
+看不懂方法没关系，你只需要理解这个过程即可。首先，我们创建了一个 Lua 虚拟机（堆栈），然后往这个堆栈中压入了四个元素并将它们全部打印。我们遍历时是从索引 1 开始的，也就是从栈底开始，最先入栈的会处于栈底。因此，如果我们按照递增的顺序输出元素，其实相当于自下而上进行输出。Lua 堆栈还提供了其它的接口，它们大部分都是与栈操作有关。
+
+### Lua与C++交互
+
+Lua 与 C++ 交互分为 Lua 调用 C++ 和 C++ 调用 Lua。首先来看 C++ 调用 Lua，这个其实直接用 Lua 环境就能够调用 Lua 脚本：
+
+```cpp
+#include <iostream>
+ 
+using namespace std;
+ 
+#include <iostream>
+ 
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+ 
+using namespace std;
+ 
+int main()
+{
+    //创建Lua环境
+    lua_State* L=luaL_newstate();
+    //打开Lua标准库,常用的标准库有luaopen_base、luaopen_package、luaopen_table、luaopen_io、
+    //luaopen_os、luaopen_string、luaopen_math、luaopen_debug
+    luaL_openlibs(L);
+ 
+    //下面的代码可以用luaL_dofile()来代替
+    //加载Lua脚本
+    luaL_loadfile(L,"script.lua");
+    //运行Lua脚本
+    lua_pcall(L,0,0,0);
+ 
+    //将变量arg1压入栈顶
+    lua_getglobal(L,"arg1");
+    //将变量arg2压入栈顶
+    lua_getglobal(L,"arg2");
+ 
+    //读取arg1、arg2的值
+    int arg1=lua_tonumber(L,-1);
+    int arg2=lua_tonumber(L,-2);
+ 
+    //输出Lua脚本中的两个变量
+    cout <<"arg1="<<arg1<<endl;
+    cout <<"arg2="<<arg2<<endl;
+ 
+    //将函数printf压入栈顶
+    lua_getglobal(L,"printf");
+    //调用printf()方法
+    lua_pcall(L,0,0,0);
+ 
+    //将函数sum压入栈顶
+    lua_getglobal(L,"sum");
+    //传入参数
+    lua_pushinteger(L,15);
+    lua_pushinteger(L,25);
+    //调用printf()方法
+    lua_pcall(L,2,1,0);//这里有2个参数、1个返回值
+    //输出求和结果
+    cout <<"sum="<<lua_tonumber(L,-1)<<endl;
+ 
+    //将表table压入栈顶
+    lua_getglobal(L,"table");
+    //获取表
+    lua_gettable(L,-1);
+    //输出表中第一个元素
+    cout <<"table.a="<<lua_tonumber(L,-2)<<endl;
+}
+```
+
+加载 Lua 脚本主要有 `luaL_loadfile()` 和 `luaL_dofile()` 两个方法，前者是仅加载脚本，而后者则会在加载的同时调用脚本文件。
+
+Lua 脚本的代码如下：
+
+```lua
+--在Lua中定义两个变量
+arg1=15
+arg2=20
+ 
+--在Lua中定义一个表
+table=
+{
+    a=25,
+    b=30
+}
+ 
+--在Lua中定义一个求和的方法
+function sum(a,b)
+  return a+b
+end
+ 
+--在Lua中定义一个输出的方法
+function printf()
+  print("This is a function declared in Lua")
+end
+```
+
+可以看到，我们在 C++ 代码中调用 `lua_getglobal()` 方法把 Lua 脚本中的参数和方法压入了堆栈。当我们需要调用堆栈中的方法时，首先就是要把方法压入堆栈，然后通过 push 系列方法为栈中的方法传入参数。完成参数传入后，就可以使用 `lua_pcall()` 来执行方法。这里解释一下它的四个参数：第一个代表 Lua 环境 Lua_State，第二个是要传入的参数个数，第三个是返回值的个数，第四个一般默认为 0。执行该方法后，结果将被压入栈顶，我们可以使用索引 -1 访问结果。如果方法有多个返回值，那么 -1 代表最后一个返回值。
+
+接下来再看看 Lua 调用 C++。首先我们要在 C++ 中定义一个方法，该方法必须以 `lua_State *` 为参数，返回值则为 int 类型，代表返回值个数。
+
+```cpp
+static int AverageAndSum(lua_State *L)
+{
+	//返回栈中元素的个数
+	int n = lua_gettop(L);
+	//存储各元素之和
+	double sum = 0;
+	for (int i = 1; i <= n; i++)
+	{
+	    //参数类型处理
+		if (!lua_isnumber(L, i))
+		{
+		    //传入错误信息
+			lua_pushstring(L, "Incorrect argument to 'average'");
+			lua_error(L);
+		}
+		sum += lua_tonumber(L, i);
+	}
+	//传入平均值
+	lua_pushnumber(L, sum / n);
+	//传入和
+	lua_pushnumber(L, sum);
+ 
+	//返回值的个数，这里为2
+	return 2;
+}
+```
+
+然后要在 C++ 中注册该方法：
+
+```cpp
+lua_register(L, "AverageAndSum", AverageAndSum);
+```
+
+接下来我们就可以在 Lua 中调用 C++ 的方法：
+
+```lua
+average,sum=AverageAndSum(20,52,75,14)
+print("Average=".average)
+print("Sum=".sum)
+```
+
+Lua 与 C++ 的交互就先到此为止了，如果有其他需要的建议自行去了解，我这篇笔记的重点是介绍 Lua 和 C# 的交互。
+
+## Lua与C#交互
+
+---
+
+### 常见Lua项目
+
+介绍一下常见的 Lua 项目：
+
+* LuaInterface：开源的 C# 与 Lua 的桥接库，能够快速实现 C# 与 Lua 的相互调用、事件传递。不过这个东西已经很久没更新了，适合初学者练习。
+* nLua：LuaInterface 的分支，相当于对原有版本进行了升级。
+* uLua：基于 LuaInterface 实现，集成了 Lua、Luajit、LuaInterface，效率比较高，在手游行业应用很广。
+* toLua：uLua 升级版，效率更高，我之前实习过的游戏公司就是用的这个。
+* sLua：从 uLua 扩展过来，效率也不错，不过这个经常被拿来和 toLua 对比，孰优孰劣我这里不做评价。
+* xLua：腾讯推出的热补丁方案，我之后有时间会写一篇笔记来分享。
+
+按道理来说，我们前面已经知道 Lua 如何与 C++ 交互了，那么我们应该也可以通过编写 dll 来访问 Lua 脚本。不过呢，既然已经有了成熟的开源项目，那么我们还是直接用比较好。
+
+### LuaInterface
+
+Lua 解释器能够被轻松嵌入宿主库，而 LuaInterface 则是 CLR 访问 Lua 解释器的主要接口。一个 LuaInterface 类对象相当于一个 Lua 解释器，解释器可以存在多个，并且完全相互独立。
+
+使用 LuaInterface 需要下载 LuaInterface.dll、Luanet.dll，然后在脚本中引用。
+
+C# 调用 Lua 如下：
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using LuaInterface;
+
+namespace TestCSharpAndLuaInterface
+{
+    static void Main(string[] args)
+    {
+        // 新建一个Lua解释器，每一个Lua实例都相互独立
+        Lua lua = new Lua();
+
+        // Lua的索引操作[]可以创建、访问、修改global域，括号里面是变量名
+        // 创建global域num和str
+        lua["num"] = 2;
+        lua["str"] = "a string";
+        
+        // 创建空table
+        lua.NewTable("tab");
+
+        // 执行lua脚本，这两个方法都会返回object[]记录脚本的执行结果
+        lua.DoString("num = 100; print(\"i am a lua string\")");
+        lua.DoFile("C:\\luatest\\testLuaInterface.lua");
+        object[] retVals = lua.DoString("return num,str");
+
+        // 访问global域num和str
+        double num = (double)lua["num"];
+        string str = (string)lua["str"];
+
+        Console.WriteLine("num = {0}", num);
+        Console.WriteLine("str = {0}", str);
+        Console.WriteLine("width = {0}", lua["width"]);
+        Console.WriteLine("height = {0}", lua["height"]);
+    }
+}
+```
+
+LuaInterface 创建堆栈用的是 `new Lua()`，并且这个堆栈可以用 `[]` 直接访问，很是方便。LuaInterface 有两个重要的方法：`Lua.DoString()` 和 `Lua.DoFile()`。DoString 可以直接执行 Lua 代码，你只需要把代码作为字符串传入即可；DoFile 则是执行指定路径的 Lua 脚本。
+
+Lua 调用 C# 也很简单，我们需要先注册方法，然后再进行调用：
+
+```csharp
+namespace TestCSharpAndLuaInterface
+{
+    class TestClass
+    {
+        private int value = 0;
+
+        public void TestPrint(int num)
+        {
+            Console.WriteLine("TestClass.TestPrint Called! value = {0}", value = num);
+        }
+
+        public static void TestStaticPrint()
+        {
+            Console.WriteLine("TestClass.TestStaticPrint Called!");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Lua lua = new Lua();
+            
+            TestClass obj = new TestClass();
+            // 注册类对象方法到Lua，供Lua调用
+            lua.RegisterFunction("LuaTestPrint", obj, obj.GetType().GetMethod("TestPrint"));
+            // 注册类静态方法到Lua，供Lua调用
+            lua.RegisterFunction("LuaStaticPrint", obj, typeof(TestClass).GetMethod("TestStaticPrint"));
+
+            // 在Lua中调用C#的函数
+            lua.DoString("LuaTestPrint(10)");
+            lua.DoString("LuaStaticPrint()");
+        }
+    }
+}
+```
+
+上述代码中我是直接用 DoString 来测试的。如果你需要在 Lua 脚本中调用 C#，可以看下面的例子：
+
+```lua
+-- 引用LuaNet.dll
+require "luanet"
+-- 引用C#的System
+luanet.load_assembly("System")
+-- 引用System的Int32类
+Int32 = luanet.import_type("System.Int32")
+-- 将字符串转换成int
+num = Int32.Parse("123")
+print(num)
+```
+
+在 Lua 中访问 C# 的属性和方法其实就是访问对应的索引，比如访问属性的话就是 `obj.name` 或者 `obj["name"]`，访问方法的话则是 `obj:method()`。
+
+LuaInterface 的基本用法就到此为止了，用上面的方法便能够在 Unity 中处理 C# 与 Lua 的交互。当然，如果你要把项目移植到各个平台的话（特别是 IOS），那么你是不能够使用 LuaInterface 的，因为某些平台并不支持 C# 的反射。这时候建议各位去使用 uLua、toLua 等开源项目，这些项目用起来效率更高，并且可以移植到各个平台。
