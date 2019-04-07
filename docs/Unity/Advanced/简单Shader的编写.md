@@ -38,7 +38,7 @@ Shader "Custom/SimpleShader"
 
 新建一个材质，把写好的 Shader 赋给它。然后在场景中新建一个球体，将球体的材质改为我们刚刚弄好的材质。效果如下：
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%9901.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%99/01.png)
 
 效果虽然简单，但这确实是我们编写的第一个顶点/片元着色器。代码中我们只写了一个 SubShader，因为我们可以不选择声明任何材质属性。由于我们没有设置渲染状态和标签，因此 SubShader 将使用默认设置渲染。接下来最重要的就是 CGPROGRAM 和 ENDCG 中的 Cg 代码了。
 
@@ -136,7 +136,7 @@ Shader "Custom/SimpleShader"
 
 这样我们就得到了一个彩色的小球：
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%9902.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%99/02.png)
 
 我们先来看一下结构体的语法：
 
@@ -232,7 +232,7 @@ Shader "Custom/SimpleShader"
 | Cube | samplerCube |
 | 3D | sampler3D |
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%9903.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%AE%80%E5%8D%95Shader%E7%9A%84%E7%BC%96%E5%86%99/03.png)
 
 这样一来我们就可以直接在材质面板中更改颜色。
 

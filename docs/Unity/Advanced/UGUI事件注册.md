@@ -8,7 +8,7 @@
 
 对于一个 Button 组件，初学者添加事件通常会在 Button 组件的属性面板中找到 `OnClick()` 属性，然后拖拽对应的游戏物体并选择脚本中对应的回调事件。
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C01.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C/01.png)
 
 这种做法看似简单，但当 Button 数量过多时会影响 UI 事件的管理，而且很容易操作出错。比较好的做法是把上述操作用代码实现出来：
 
@@ -162,11 +162,11 @@ public class UIDragScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
 如果这样能够解决你的问题，那么这篇笔记就到此为止了。我之所以要往后写，是因为这种做法只是治标不治本。举个例子，假如你现在要给背包界面中的 ScrollRect 添加拖拽事件，那么你会发现 ScrollRect 虽然能够拖拽，但是它并不会对事件作出响应。原因很简单，我们上面的做法只是让按钮在接受点击时调用 ScrollRect 的拖拽事件，但是我们为 ScrollRect 添加的事件是无法触发的，除非你能让 ScrollRect 直接接收到事件（比如点在没有按钮的地方）。
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C02.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C/02.png)
 
 如上图，如果你在有按钮的位置进行拖拽，虽然可以拖动 ScrollRect，但是只能够响应 Click 事件。
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C03.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C/03.png)
 
 上图中，我们在没有按钮的位置进行了拖拽，所以可以响应 Drag 事件。
 

@@ -47,7 +47,7 @@ ShaderLab 为控制渲染过程提供了一层抽象，开发者只需要使用 
 
 标准着色器模板的信息：
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A801.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A8/01.png)
 
 下面来解释一下各个属性的意思：
 
@@ -138,7 +138,7 @@ Properties
 
 将上述编写的 Shader 赋给一个默认材质，得到如下属性面板：
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A802.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A8/02.png)
 
 ### SubShader
 
@@ -299,4 +299,4 @@ Shader "Tutorial/Basic"
 
 上面在介绍 Unity 的着色器形式时，我们一共介绍了三种形式的着色器。其实，在 Unity5.2 之后，Unity 中只存在顶点/片元着色器这一种，其它的两种着色器会被 Unity 转换成对应的顶点/片元着色器。我们在编写表面着色器时，会把 Cg/HLSL 代码写在 SubShader 中，但由于表面着色器会被自动转换，所以相关的 Cg/HLSL 代码其实都是写在 Pass 语句块中。如果对这方面有疑问的话，可以查看 Shader 文件的属性面板中的 `Compiled Code` 一栏，点击后可以阅读相关的汇编代码，同时也可以设置 Shader 需要编译的平台等。
 
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A803.png)
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UnityShader%E5%85%A5%E9%97%A8/03.png)
