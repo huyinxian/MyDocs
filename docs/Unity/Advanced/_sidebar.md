@@ -4,6 +4,7 @@
     * [PureMVC解读](Unity/Advanced/PureMVC解读)
     * [资源加载框架](Unity/Advanced/资源加载框架)
     * [ECS入门](Unity/Advanced/ECS入门)
+    * [Entitas游戏示例](Unity/Advanced/Entitas游戏示例)
 * **进阶部分**
     * [Unity中的Lua](Unity/Advanced/Unity中的Lua)
     * [AssetBundle基础](Unity/Advanced/AssetBundle基础)
