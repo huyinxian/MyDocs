@@ -12,6 +12,7 @@
     * [设计模式](Unity/Advanced/设计模式)
 * **游戏热更新**
     * [Lua基础](Unity/Advanced/Lua基础)
+    * [ToLua示例](Unity/Advanced/ToLua示例)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
     * [UnityShader入门](Unity/Advanced/UnityShader入门)
