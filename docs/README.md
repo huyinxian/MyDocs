@@ -26,8 +26,10 @@
 - [ ] 读《Effective C#》
 - [ ] 读《C++ Primer》
 - [ ] LeetCode、牛客网刷题
-- [ ] 研究一下 ToLua 框架，学习如何减少 Lua 调用 Unity 接口，了解 LuaJit 优化
-- [ ] 看一下 XLua
-- [ ] 了解 ECS 框架并开发相关 Demo
+- [ ] 研究 ToLua
+- [ ] 研究 XLua
+- [ ] 了解 LuaJIT 以及 Unity 中的 Lua 优化
+- [ ] 了解 IL2CPP
+- [ ] 研究 ECS 框架，并以此开发一个完整的仿东方 Project 游戏（参考收藏的文章和 CrazyStorm）
 - [ ] 做一个帧同步的 Demo
 - [ ] 补一下计算机网络的知识
