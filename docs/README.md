@@ -17,15 +17,17 @@
 ### 2019.4-2020.4
 
 - [ ] 深入熟悉 Unity 引擎，动画系统、UI源码、物理系统、各类组件源码，了解 Unity 的运行机制
-- [ ] Unity Shader 入门
-- [ ] 把以前遗漏的 C# 基础补一补，然后看《Effective C#》
-- [ ] 把《C++ Primer》再过一遍
+- [ ] 把以前收藏的渲染、游戏开发相关的文章看一遍
+- [ ] 读《Unity Shader入门精要》
+- [ ] 读《3D数学基础：图形与游戏开发》
+- [ ] 读《DirectX11龙书》
+- [ ] 读《游戏引擎架构》
+- [ ] 读《Real-Time-Rendering 3rd》
+- [ ] 读《Effective C#》
+- [ ] 读《C++ Primer》
+- [ ] LeetCode、牛客网刷题
 - [ ] 研究一下 ToLua 框架，学习如何减少 Lua 调用 Unity 接口，了解 LuaJit 优化
-- [ ] DirectX
-- [ ] 看《Real-Time-Rendering 3rd》
+- [ ] 看一下 XLua
+- [ ] 了解 ECS 框架并开发相关 Demo
 - [ ] 做一个帧同步的 Demo
 - [ ] 补一下计算机网络的知识
-- [ ] 了解 ECS 框架并开发相关 Demo
-- [ ] 看《游戏引擎架构》
-- [ ] 把以前收藏的渲染、游戏开发相关的文章看一遍
-- [ ] LeetCode、牛客网刷题
