@@ -172,15 +172,18 @@ Index 的实现方式为哈希表，key 为 Index，value 为 Entity。内置的
 
 System 是我们定义行为的地方，实现一个 System 需要我们继承多个接口。`ISystem` 是最基础的接口，它是空的，与 `IComponent` 类似，都是用于标记。
 
-如果我们需要 System 持续执行，那么可以继承 `IExecuteSystem` 接口并实现 `Execute()` 方法；如果我们需要持续清理逻辑，那么可以继承 `ICleanupSystem` 接口并实现 `Cleanup()` 方法，该方法会在所有 `Execute()` 执行后再执行。
+System 有以下几种接口：
 
-其它的接口也有，比如 `IInitializeSystem` 可以用于初始化，`ITearDownSystem` 可以用于场景/游戏结束后执行。我们可以根据需要继承对应的接口。
+* IExecuteSystem：需要实现 `Execute()` 方法，可以放在 Update 中每帧执行一次。
+* ICleanupSystem：需要实现 `Cleanup()` 方法，它会在所有 `Execute()` 执行完之后执行（相当于每帧的末尾）。
+* IInitializeSystem：需要实现 `Initialize()` 方法，可以在 Start 中用于初始化。
+* ITearDownSystem：可以用于场景/游戏结束后执行。
 
 当实现完系统后，我们可以在一个 MonoBehavior 脚本中调用系统中的方法。如果你用的不是 Unity，那么就需要自己找一个合适的地方执行。一般来说，我们可以把一个持续执行的系统放到 Update 中，当然 FixedUpdate 和 LateUpdate 也可以，具体要看自己的选择。
 
 ### Reactive System
 
-响应式系统只会在我们需要处理 Entity 时才会被调用，它会使用 Collector 来收集特定的 Entity。
+响应式系统使用 Collector 来收集特定的 Entity，只有当收集器收集到新的 Entity 时系统才会执行，否则将不作响应。
 
 ```csharp
 using System.Collections.Generic;
@@ -196,7 +199,7 @@ public sealed class DestroySystem : ReactiveSystem<GameEntity>
         return context.CreateCollector(GameMatcher.Destroyed);
     }
 
-    // 筛选出需要被销毁的Entity
+    // 过滤出需要被销毁的Entity
     protected override bool Filter(GameEntity entity)
     {
         return entity.isDestroyed;
@@ -213,11 +216,11 @@ public sealed class DestroySystem : ReactiveSystem<GameEntity>
 }
 ```
 
-在上面的代码中，`GetTrigger` 方法返回了一个收集器，这个收集器会监测所有挂载了 `Destroyed` 组件的实体。我在之前的章节中有提到过，Group 有 `Added`、`Removed`、`AddedOrRemoved` 三个事件可以监测。如果你没有进行指定，那么收集器默认监测的是 `Added` 事件，也就是说当我们把一个 `Destroyed` 组件加到实体上时，这个实体就会被添加到 `Destroyed` 的 Group 中，并且被对应的收集器收集到响应式系统中。
+在上面的代码中，`GetTrigger` 方法返回了一个收集器，这个收集器会监测所有挂载了 `Destroyed` 组件的实体。我在之前的章节中有提到过，Group 有 `Added`、`Removed`、`AddedOrRemoved` 三个事件可以监测。如果你没有进行指定，那么收集器默认监测的是 `Added` 事件，也就是说当我们把一个 `Destroyed` 组件加到实体上时，这个实体就会被添加到 `Destroyed` 的 Group，并且会被收集器收集到响应式系统中然后触发 `Execute()` 方法。
 
 你可能注意到响应式系统中有一个 `Filter` 方法，这个方法其实是用于过滤的。收集器有一个特性，如果一个实体被某个收集器收集了，那么即使将这个实体复原，它依然会被收集器所收纳。举个例子，我们想收集所有移除了 `Destroyed` 组件的实体，那么只要这个实体被收集了，哪怕你再次给实体挂上 `Destroyed` 组件，它依然会被收集器收集。为了避免这种情况，我们可以在 `Filter` 中进行过滤，检查它们是否包含 `Destroyed` 组件，如果包含的话就舍弃掉。
 
-最后，响应式系统之所以叫做这个名字，是因为它只有在收集器收集到新的 Entity 时才会触发 `Execute` 方法，否则该方法不会被调用。
+最后，响应式系统之所以叫做这个名字，是因为它只有在收集器收集到新的 Entity 时才会触发 `Execute()` 方法。如果响应式系统关注的 Group 没有发生变动，那么 `Execute()` 将不会被调用。
 
 ## Entitas自动生成代码
 
@@ -234,10 +237,18 @@ Jenny 窗口中有一个 `Contexts` 选项，如果你没有改默认设置，�
 * Attribute：属性，也就是 C# 中的 Attribute 特性
 * ComponentsLookUp：记录组件的总数、名称、类型
 * Context：上下文，用于管理 Entity
-* Entity：实体
+* Entity：实体，一个上下文对应一种实体
 * Matcher：匹配器，用于筛选实体
 
-如果你对上面的文件仍有疑问，那么不要着急，我会在后面的示例中慢慢进行介绍。按照编程惯例，我们先来打印一个 HelloWorld 试试手。
+如果你对上面的文件仍有疑问，那么不要着急，我会在后面的示例中慢慢进行介绍。
+
+## 用Entitas打印HelloWorld
+
+---
+
+按照编程惯例，我们先来打印一个 HelloWorld 试试手。
+
+### 编写组件
 
 首先创建一个 `LogComponent` 脚本：
 
@@ -261,5 +272,193 @@ public class LogComponent : IComponent
 }
 ```
 
-有了组件，我们还需要一个系统来处理数据：
+我们一共有两个上下文：`Game`、`Input`，每当我们编写组件时需要为组件加上对应的 Attribute，以标记该组件属于哪一个 Context。在上面的代码中，`LogComponent` 属于 `Game` 上下文。
+
+我们再次点击 `Generate` 自动生成代码后，`GameComponentsLookUp` 中就会多出以下代码：
+
+```csharp
+public static class GameComponentsLookup {
+
+    public const int Log = 0;
+
+    public const int TotalComponents = 1;
+
+    public static readonly string[] componentNames = {
+        "Log"
+    };
+
+    public static readonly System.Type[] componentTypes = {
+        typeof(LogComponent)
+    };
+}
+```
+
+`GameComponentsLookup` 会给所有的组件编个号，Entity 会用该索引来创建对应的组件。`GameEntity` 的相关方法如下，大家可以对照着理解一下：
+
+```csharp
+public partial class GameEntity {
+
+    public LogComponent log { get { return (LogComponent)GetComponent(GameComponentsLookup.Log); } }
+    public bool hasLog { get { return HasComponent(GameComponentsLookup.Log); } }
+
+    public void AddLog(string newMessage) {
+        var index = GameComponentsLookup.Log;
+        var component = (LogComponent)CreateComponent(index, typeof(LogComponent));
+        component.message = newMessage;
+        AddComponent(index, component);
+    }
+
+    public void ReplaceLog(string newMessage) {
+        var index = GameComponentsLookup.Log;
+        var component = (LogComponent)CreateComponent(index, typeof(LogComponent));
+        component.message = newMessage;
+        ReplaceComponent(index, component);
+    }
+
+    public void RemoveLog() {
+        RemoveComponent(GameComponentsLookup.Log);
+    }
+}
+```
+
+当我们编写了一个新脚本时，要记得重新把代码生成一遍。这多多少少算是 Entitas 的缺陷之一，因为当程序出现报错时，你必须要先把错误解决了才能够进行生成（ToLua 等框架是一样的）。
+
+### 编写系统
+
+有了组件，我们还需要一个响应式系统来处理数据。继承 `ReactiveSystem` 时需要指定该系统监听的上下文，并且填入对应的实体。这里我们监听的是 `Game` 上下文，因此需要填入 `GameEntity`。
+
+```csharp
+using System.Collections.Generic;
+using UnityEngine;
+using Entitas;
+using System;
+
+/// <summary>
+/// 打印消息系统
+/// </summary>
+public class LogSystem : ReactiveSystem<GameEntity>
+{
+    public LogSystem(Contexts contexts) : base(contexts.game)
+    {
+
+    }
+
+    protected override void Execute(List<GameEntity> entities)
+    {
+        foreach (GameEntity entity in entities)
+        {
+            Debug.Log(entity.log.message);
+        }
+    }
+
+    /// <summary>
+    /// 过滤器，用于过滤出系统感兴趣的实体
+    /// </summary>
+    protected override bool Filter(GameEntity entity)
+    {
+        // 将那些包含了LogComponent的实体过滤出来
+        // 注意，编写一个新的Component后要记得重新Generate，因为hasLog方法是框架帮我们自动生成的
+        return entity.hasLog;
+    }
+
+    /// <summary>
+    /// 收集器
+    /// </summary>
+    protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
+    {
+        return context.CreateCollector(GameMatcher.Log);
+    }
+}
+```
+
+接下来我们需要写一个用于初始化的系统，这个系统目前的作用是创建一个附带有 `HelloWorld` 消息的实体：
+
+```csharp
+using Entitas;
+
+public class InitSystem : IInitializeSystem
+{
+    private readonly GameContext gameContext;
+
+    public InitSystem(Contexts contexts)
+    {
+        gameContext = contexts.game;
+    }
+
+    public void Initialize()
+    {
+        // 创建一个实体
+        gameContext.CreateEntity().AddLog("HelloWorld");
+    }
+}
+```
+
+### 编写Feature
+
+系统写完了，之后我们要写一个用于管理所有 System 的 System（你可以把它看做是 SystemManager），它需要继承 `Feature`：
+
+```csharp
+public class AddGameSystems : Feature
+{
+    /// <summary>
+    /// 将Game相关的系统添加到框架中
+    /// </summary>
+	public AddGameSystems(Contexts contexts) : base ("AddGameSystem")
+    {
+        Add(new LogSystem(contexts));
+        Add(new InitSystem(contexts));
+    }
+}
+```
+
+顾名思义，`AddGameSystems` 的功能就是把与 Game 上下文有关的系统全部加入到框架中。如果你之后还写了其他的系统，那么也可以在这里面加上：
+
+### 编写控制器运行程序
+
+最后，我们需要创建一个控制器脚本，用于持续执行系统：
+
+```csharp
+using UnityEngine;
+using Entitas;
+
+public class GameController : MonoBehaviour
+{
+    private Systems systems;
+
+    private void Start()
+    {
+        var contexts = Contexts.sharedInstance;
+        systems = new Feature("Systems").Add(new AddGameSystems(contexts));
+        // 初始化放在Start中，只执行一次
+        systems.Initialize();
+    }
+
+    private void Update()
+    {
+        // 这两个方法是每帧调用
+        // 首先执行所有的Excute方法，然后再执行所有的Cleanup方法
+        systems.Execute();
+        systems.Cleanup();
+    }
+}
+```
+
+之前在编写 System 时，我每次都会写一个构造方法，参数为 `Contexts`。Contexts 会定义所有的上下文，比如 `contexts.game` 就可以获取 Game 上下文。Contexts 使用了单例模式，你可以用 `Contexts.sharedInstance` 来获取。
+
+### 总结
+
+ECS 框架的使用步骤基本如下：
+
+* 编写组件，并用代码生成器自动生成相关方法。
+* 编写相关系统，包含构造方法、过滤器、收集器、执行方法。
+* 编写系统管理器（Feature），用于系统的实例化。
+* 编写控制器，调用 Feature，并每帧执行系统的相关方法。
+
+HelloWorld 示例中我使用的是响应式系统，它所关注的事件是 `Added`，也就是说它只在新的实体加入时才会被触发。由于我只创建了一个实体，因此它只会打印一句 `HelloWorld`，这一点要注意。
+
+## 使用Entitas与Unity的UI交互
+
+---
+
+上面我介绍了 Entitas 各个模块的基本用法，接下来就再提高点难度，做一个与 Unity 有更多交互的示例。要注意的是，为了让各个示例能够清晰地分隔开，最好给示例代码都加上相应的命名空间。ECS 在自动生成变量名时会把命名空间作为前缀，以区分同名模块。
 
