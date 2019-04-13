@@ -6,11 +6,12 @@
     * [ECS入门](Unity/Advanced/ECS入门)
     * [Entitas游戏示例](Unity/Advanced/Entitas游戏示例)
 * **进阶部分**
-    * [Unity中的Lua](Unity/Advanced/Unity中的Lua)
     * [AssetBundle基础](Unity/Advanced/AssetBundle基础)
     * [打包问题汇总](Unity/Advanced/打包问题汇总)
     * [网络编程基础](Unity/Advanced/网络编程基础)
     * [设计模式](Unity/Advanced/设计模式)
+* **游戏热更新**
+    * [Lua基础](Unity/Advanced/Lua基础)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
     * [UnityShader入门](Unity/Advanced/UnityShader入门)
