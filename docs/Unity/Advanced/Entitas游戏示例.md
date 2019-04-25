@@ -325,7 +325,7 @@ public partial class GameEntity {
 
 ### 编写系统
 
-有了组件，我们还需要一个响应式系统来处理数据。继承 `ReactiveSystem` 时需要指定该系统监听的上下文，并且填入对应的实体。这里我们监听的是 `Game` 上下文，因此需要填入 `GameEntity`。
+有了组件，我们还需要一个响应式系统来处理数据。继承 `ReactiveSystem` 时需要指定该系统监听的实体。这里我们监听的是 `Game` 上下文，因此需要填入 `GameEntity`。
 
 ```csharp
 using System.Collections.Generic;
