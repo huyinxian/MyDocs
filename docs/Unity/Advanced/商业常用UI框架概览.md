@@ -59,6 +59,8 @@
 
 ---
 
+UIBinding 的核心思想是基于 MVVM 的，即 Model、View、ViewModel，存在视图和模型之间的双向转换。
+
 ### 框架概览
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E5%95%86%E4%B8%9A%E5%B8%B8%E7%94%A8UI%E6%A1%86%E6%9E%B6%E6%A6%82%E8%A7%88/UIBinding%E6%A1%86%E6%9E%B6%E6%A6%82%E8%A7%88.png)
