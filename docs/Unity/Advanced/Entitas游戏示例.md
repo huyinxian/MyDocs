@@ -445,7 +445,7 @@ public class GameController : MonoBehaviour
 
 之前在编写 System 时，我每次都会写一个构造方法，参数为 `Contexts`。Contexts 会定义所有的上下文，比如 `contexts.game` 就可以获取 Game 上下文。Contexts 使用了单例模式，你可以用 `Contexts.sharedInstance` 来获取。
 
-### 总结
+### 小结
 
 ECS 框架的使用步骤基本如下：
 
@@ -462,3 +462,102 @@ HelloWorld 示例中我使用的是响应式系统，它所关注的事件是 `A
 
 上面我介绍了 Entitas 各个模块的基本用法，接下来就再提高点难度，做一个与 Unity 有更多交互的示例。要注意的是，为了让各个示例能够清晰地分隔开，最好给示例代码都加上相应的命名空间。ECS 在自动生成变量名时会把命名空间作为前缀，以区分同名模块。
 
+### 基本功能演示
+
+这个示例的功能很简单，首先点击左键时会在点击位置生成一张图片，点击右键时所有图片会旋转朝向点击位置并匀速移动至该位置。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Entitas%E6%B8%B8%E6%88%8F%E7%A4%BA%E4%BE%8B/06.png)
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Entitas%E6%B8%B8%E6%88%8F%E7%A4%BA%E4%BE%8B/07.png)
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Entitas%E6%B8%B8%E6%88%8F%E7%A4%BA%E4%BE%8B/08.png)
+
+需要注意的是，鼠标的点击位置不能直接拿来做图片的位置，必须要进行屏幕坐标到世界坐标的转换。为了保证转换后位置是正确的，主相机的投影模式要改成正交，因为透视模式进行坐标转换得到的坐标永远是屏幕中心点（透视模式下相机的视野是一个视锥体，不明白的话可以自己试试）。
+
+### 结构划分
+
+由于篇幅原因，这里就不贴详细的代码了，只讲解一下主要的实现思路。该示例的功能并不复杂，因此我们依旧只需要 Game、Input 这两个上下文就可以了。
+
+Game 上下文所需组件如下：
+
+* MoveCompleteComponent：标志组件，用于标记物体是否允许移动。
+* MoveComponent：记录目标位置。
+* PositionComponent：记录物体的位置。
+* SpriteComponent：记录图片的名称。
+* ViewComponent：记录物体的 Transform 组件。
+
+Input 上下文所需组件如下：
+
+* MouseComponent：唯一组件，记录按钮以及按钮触发的事件。按钮分为左键和右键，事件分为按下和抬起。
+
+组件介绍完了，接下来就需要编写对应的系统来处理实体了。示例所需系统如下：
+
+* AddViewSystem：响应式，为实体添加 View 组件。
+* CreaterSystem：响应式，当左键按下时创建一张图片。
+* DirectionSystem：响应式，当有物体需要移动状态时改变该物体的朝向。
+* MouseSystem：实现 IExecuteSystem 接口，当鼠标点击发生时修改 inputContext 中的 Mouse 组件。
+* MoveSystem：响应式，当有物体需要移动状态时为其调用 DoTween 组件进行移动。
+* PositionSystem：响应式，当实体的 Position 组件变动时修改物体的位置。
+* RenderSpriteSystem：响应式，根据图片名称修改物体的图片。
+* StartMoveSystem：响应式，当右键按下时为所有图片添加移动组件（进入移动状态）。
+
+### 左键点击监听
+
+由于我们需要监听鼠标的点击，因此 MouseSystem 不能写成响应式，而是应该每帧都进行调用。输入类的设备通常都是唯一的，例如鼠标、键盘等等，因此我们需要把 Mouse 组件写成单例组件。单例组件并不会挂载在某个实体上，所以如果要对单例组件进行修改，可以直接在对应的上下文中进行修改：
+
+```csharp
+public void Execute()
+{
+    if (Input.GetMouseButtonDown(0))
+    {
+        // 更改数据要用Replace，直接赋值无法让框架响应
+        // inputContext.interactionExampleMouse.mouseButton = MouseButton.Left;
+        inputContext.ReplaceInteractionExampleMouse(MouseButton.Left, MouseEvent.Down);
+    }
+    if (Input.GetMouseButtonDown(1))
+    {
+        inputContext.ReplaceInteractionExampleMouse(MouseButton.Right, MouseEvent.Down);
+    }
+}
+```
+
+当鼠标点击事件发生时（即 Mouse 组件发生了更改），各类响应式系统就会开始运作，比如创建一个新的实体，然后给实体挂上各种组件等等。具体的逻辑就不细讲了。
+
+顺带一提，我们在修改组件的数据时要使用框架提供的 API，如果直接进行修改的话是无法让框架响应的。另外，`Replace` 同样也会给实体添加组件，因此会被收集器给收集起来。可以看一下它的代码：
+
+```csharp
+public void ReplaceInteractionExampleMouse(MouseButton newMouseButton, MouseEvent newMouseEvent) {
+    var entity = interactionExampleMouseEntity;
+    if (entity == null) {
+        entity = SetInteractionExampleMouse(newMouseButton, newMouseEvent);
+    } else {
+        entity.ReplaceInteractionExampleMouse(newMouseButton, newMouseEvent);
+    }
+}
+```
+
+逻辑很简单，如果当前实体不存在，那么就新创建一个实体；如果实体存在，那么就更新实体的组件。内部的实现如下：
+
+```csharp
+public void AddInteractionExampleMouse(MouseButton newMouseButton, MouseEvent newMouseEvent) {
+    var index = InputComponentsLookup.InteractionExampleMouse;
+    var component = (InteractionExample.MouseComponent)CreateComponent(index, typeof(InteractionExample.MouseComponent));
+    component.mouseButton = newMouseButton;
+    component.mouseEvent = newMouseEvent;
+    AddComponent(index, component);
+}
+
+public void ReplaceInteractionExampleMouse(MouseButton newMouseButton, MouseEvent newMouseEvent) {
+    var index = InputComponentsLookup.InteractionExampleMouse;
+    var component = (InteractionExample.MouseComponent)CreateComponent(index, typeof(InteractionExample.MouseComponent));
+    component.mouseButton = newMouseButton;
+    component.mouseEvent = newMouseEvent;
+    ReplaceComponent(index, component);
+}
+```
+
+可以看到，`Add` 和 `Replace` 其实都是新建了一个组件，它们的区别在于内部的实现逻辑是不一样的。
+
+### 右键点击监听
+
+当右键按下时，我们需要获取到当前已经存在的实体，然后为它们添加 Move 组件。这一操作同样也是一个讯号，诸如 MoveSystem、DirectionSystem、PositionSystem 等系统就会随之响应，让图片进行旋转并移动至目标点。

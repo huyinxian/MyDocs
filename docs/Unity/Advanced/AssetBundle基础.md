@@ -6,7 +6,9 @@
 
 ---
 
-简单点来说，AssetBundle 其实就是一种特殊的资源压缩包，可以包含材质、纹理、模型、场景等资源，**但不能够包含脚本**。AssetBundle 文件可以按需加载到游戏中，并且能够被下载的包替换，是当前热更新技术必不可少的一环。
+简单点来说，AssetBundle 其实就是一种特殊的资源压缩包，可以包含材质、纹理、模型、场景等资源，**但不能够包含脚本**。AssetBundle 文件可以按需加载到游戏中，并且能够被下载的包替换，是当前热更新技术必不可少的一环。AssetBundle 可以使用 LZMA 和 LZ4 压缩算法，减少包体的大小，加快下载速度。
+
+在商业游戏的开发中，开发人员通常会把绝大部分资源打成 AssetBundle 包，然后将其上传到服务器，这样一来游戏安装包的体积将会大幅度减小。
 
 ## 如何下载AssetBundle
 
@@ -15,6 +17,16 @@
 我们可以用 `WWW` 或者 `WWW.LoadfromCacheOrDownload` 从服务器或本地缓存区获得 AssetBundle 文件，并通过 `WWW.assetbundle` 加载 AB 包。
 
 WWW 卸载很简单，使用 `www = null` 或者 `www.dispose()` 就可以移除对 www stream 的引用。
+
+### AssetBundle内存占用
+
+---
+
+要使用 AssetBundle 首先需要进行解压缩，解压完毕后 AssetBundle 会在内存中占据一定的空间，而这一部分通常被称为**内存镜像**。之后，当游戏需要使用 AB 包中的某个资源时，就可以调用 `AssetBundle.LoadAsset` 加载对应的资源，这类资源通常是 Shader、Texture、GameObject、Material 等等。如果你需要使用的资源是 GameObject，那么你还需要调用 `GameObject.Instantiate` 对其进行实例化。
+
+总而言之，AssetBundle 的内存占用可以用下面这张图来解释：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/AssetBundle%E5%9F%BA%E7%A1%80/AssetBundle%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.png)
 
 ## Resources VS AssetBundle
 
@@ -75,8 +87,6 @@ AssetBundle.Unload(true);
 Unity 在实例化游戏对象时，其实是复制和引用并行的，游戏对象的销毁仅仅只会删除那些复制出来的部分（比如 Transform 等脚本实例），而引用的 材质、贴图等资源则不会被销毁。当我们采用第一种方式时，虽然 AB 包被卸载了，但加载出来的资源是不会被卸载的。如果我们没有对这些资源进行管理，那么当引用它们的游戏对象被销毁时，这些资源就成了游离的数据块，也就引发了内存泄漏。
 
 第二种卸载方式虽然会把加载出来的资源也卸载掉，但前提是你必须保证没有对象在使用它们，否则就会导致游戏对象缺失资源。在实际的游戏运行中，我们很难判断哪些资源该卸载而哪些不该卸载，如果一定要卸载的话，最好是在切换场景时卸载上一个场景加载的 AB 包。另外，当内存达到峰值时，也可以调用 `Resources.UnloadUnusedAssets()` 来清理无引用的资源。
-
-关于内存管理的话题就不在这里展开了，我会单独拿出来做一个总结。
 
 ## AssetBundle的各种坑
 
