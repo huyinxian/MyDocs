@@ -4,6 +4,8 @@
 
 Unity 使用的 ECS 框架叫做 `Entitas`，这个东西不光能用于 Unity，你也可以把它拿来做其他的项目。
 
+?> 本章的代码会和 Entitas 三消游戏示例放在一起，各位如果有需要地可以去看看。
+
 ## Entitas搭建
 
 ---
@@ -454,7 +456,9 @@ ECS 框架的使用步骤基本如下：
 * 编写系统管理器（Feature），用于系统的实例化。
 * 编写控制器，调用 Feature，并每帧执行系统的相关方法。
 
-HelloWorld 示例中我使用的是响应式系统，它所关注的事件是 `Added`，也就是说它只在新的实体加入时才会被触发。由于我只创建了一个实体，因此它只会打印一句 `HelloWorld`，这一点要注意。
+HelloWorld 示例中我使用的是响应式系统，它所关注的事件是 `Added`，也就是说它只在新的实体加入时才会被触发。由于我只创建了一个实体，因此它只会打印一句 `HelloWorld`。
+
+!> 注意，每次编写了新的组件后都要让框架重新生成一遍代码，否则你无法使用组件相关的 API。
 
 ## 使用Entitas与Unity的UI交互
 
@@ -500,6 +504,8 @@ Input 上下文所需组件如下：
 * PositionSystem：响应式，当实体的 Position 组件变动时修改物体的位置。
 * RenderSpriteSystem：响应式，根据图片名称修改物体的图片。
 * StartMoveSystem：响应式，当右键按下时为所有图片添加移动组件（进入移动状态）。
+
+!> 向 Feature 中添加系统时一定要注意先后顺序，否则极有可能出现程序错误。
 
 ### 左键点击监听
 
@@ -561,3 +567,155 @@ public void ReplaceInteractionExampleMouse(MouseButton newMouseButton, MouseEven
 ### 右键点击监听
 
 当右键按下时，我们需要获取到当前已经存在的实体，然后为它们添加 Move 组件。这一操作同样也是一个讯号，诸如 MoveSystem、DirectionSystem、PositionSystem 等系统就会随之响应，让图片进行旋转并移动至目标点。
+
+### 如何让Unity与Entitas相互链接
+
+在上述示例中，如果我们想在 Entitas 中访问 Unity 的接口（比如 GameObject），那么通常是在 Entitas 中保存对象的索引。反过来，如果我们需要在 Unity 中使用 Entitas，那么就必须要通过某种方式获取到 Entity 的索引。
+
+为了方便开发者实现上述需求，框架在 `Entitas.Unity` 的命名空间中提供了一个扩展方法，它可以将 GameObject 与 Entity 进行链接：
+
+```csharp
+using UnityEngine;
+
+namespace Entitas.Unity
+{
+    public static class EntityLinkExtension
+    {
+        public static EntityLink GetEntityLink(this GameObject gameObject);
+        public static EntityLink Link(this GameObject gameObject, IEntity entity);
+        public static void Unlink(this GameObject gameObject);
+    }
+}
+```
+
+使用的话很简单：
+
+```csharp
+protected override void Execute(List<IMultiViewEntity> entities)
+{
+    foreach (IMultiViewEntity entity in entities)
+    {
+        string name = entity.contextInfo.name;
+        GameObject go = new GameObject(name + "View");
+        go.transform.SetParent(parentMap[name]);
+        entity.AddMultiReactiveView(go.transform);
+        // 让GameObject与Entity产生链接
+        go.Link(entity);
+    }
+}
+```
+
+完成链接后，框架会生成一个叫做 `EntityLink` 的 MonoBehavior 脚本，Unity 部分的代码可以通过该脚本获取到它所链接的 Entity。
+
+## 多上下文响应系统
+
+---
+
+在之前演示的示例中，我们所编写的响应式系统全都只用于处理某一个上下文中的实体，比如 `GameEntity` 或者 `InputEntity`。但在某些时候，组件可能属于多个上下文（即公用组件），如果按照上面所讲的编写步骤可能就无法满足我们的需求。
+
+下面是一个公用组件的示例，这两个组件从属于三种上下文：
+
+```csharp
+using UnityEngine;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
+
+namespace MultiReactive
+{
+    /// <summary>
+    /// 多上下文公用的销毁组件
+    /// </summary>
+    [Game, Input, UI]
+    public class DestroyedComponent : IComponent
+    {
+
+    }
+
+    [Game, Input, UI]
+    public class ViewComponent : IComponent
+    {
+        public Transform transform;
+    }
+}
+```
+
+这种时候应该怎么办呢？没关系，Entitas 框架提供了相关接口供我们使用，你可以在 `Generated -> Components -> Interface` 下找到它们：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Entitas%E6%B8%B8%E6%88%8F%E7%A4%BA%E4%BE%8B/09.png)
+
+当框架检测到某个组件属于多个上下文时，就会自动为其生成一个接口类。至于使用的话可以按照下面的方式：
+
+```csharp
+using System.Collections.Generic;
+using UnityEngine;
+using Entitas;
+using MultiReactive;
+using System;
+
+namespace MultiReactive
+{
+    /// <summary>
+    /// 通用销毁系统
+    /// </summary>
+    public class MultiDestroySystem : MultiReactiveSystem<IMultiDestroyEntity, Contexts>
+    {
+        public MultiDestroySystem(Contexts contexts) : base(contexts)
+        {
+
+        }
+
+        protected override void Execute(List<IMultiDestroyEntity> entities)
+        {
+            foreach (IMultiDestroyEntity entity in entities)
+            {
+                if (entity.hasMultiReactiveView)
+                {
+                    // 如果实体拥有View组件，那么就需要进行额外的销毁操作
+                    GameObject.Destroy(entity.multiReactiveView.transform.gameObject);
+                }
+                Debug.Log("Destroy in " + entity.contextInfo.name);
+            }
+        }
+
+        protected override bool Filter(IMultiDestroyEntity entity)
+        {
+            return entity.isMultiReactiveDestroyed;
+        }
+
+        protected override ICollector[] GetTrigger(Contexts contexts)
+        {
+            return new ICollector[]
+            {
+                contexts.game.CreateCollector(GameMatcher.MultiReactiveDestroyed),
+                contexts.input.CreateCollector(InputMatcher.MultiReactiveDestroyed),
+                contexts.uI.CreateCollector(UIMatcher.MultiReactiveDestroyed)
+            };
+        }
+    }
+
+    // 声明一个特殊的Entity接口，系统内部处理的就是这个Entity
+    public interface IMultiDestroyEntity : IEntity, IMultiReactiveDestroyedEntity, IMultiReactiveViewEntity { }
+}
+
+// 让对应的Entity继承接口
+public partial class GameEntity : IMultiDestroyEntity { }
+public partial class InputEntity : IMultiDestroyEntity { }
+public partial class UIEntity : IMultiDestroyEntity { }
+```
+
+可以看到，我们在系统的内部声明一个特殊的 `IMultiDestroyEntity`，该接口继承了 `IEntity`, `IMultiReactiveDestroyedEntity`, `IMultiReactiveViewEntity`，因此它可以进行如下调用：
+
+```csharp
+entity.isMultiReactiveDestroyed;
+entity.multiReactiveView;
+```
+
+值得注意的是，Entitas 中使用大量的 `partial` 关键字，这种分布式编程的结构能够让我们轻松地对原有的类进行扩展：
+
+```csharp
+// 让组件所处的所有上下文继承自定义的接口
+// 这样GameEntity、InputEntity、UIEntity都能够使用Destroy和View这两个组件
+public partial class GameEntity : IMultiDestroyEntity { }
+public partial class InputEntity : IMultiDestroyEntity { }
+public partial class UIEntity : IMultiDestroyEntity { }
+```
