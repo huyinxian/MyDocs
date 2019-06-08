@@ -12,5 +12,4 @@
     * [GitHub](https://github.com/huyinxian)
     * [老博客](http://fantasticmiao.cn/)
     * [新博客](http://blog.fantasticmiao.cn/)
-    * [关于我](Link/实习总结)
-    * [博主推荐](Link/技术博主汇总)
+    * [关于我](Link/)
