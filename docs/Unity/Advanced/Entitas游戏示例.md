@@ -605,7 +605,9 @@ protected override void Execute(List<IMultiViewEntity> entities)
 }
 ```
 
-完成链接后，框架会生成一个叫做 `EntityLink` 的 MonoBehavior 脚本，Unity 部分的代码可以通过该脚本获取到它所链接的 Entity。
+完成链接后，框架会生成一个叫做 `EntityLink` 的 MonoBehavior 脚本，Unity 部分的代码可以通过该脚本获取到它所链接的 Entity。如下图所示：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Entitas%E6%B8%B8%E6%88%8F%E7%A4%BA%E4%BE%8B/10.png)
 
 ## 多上下文响应系统
 
