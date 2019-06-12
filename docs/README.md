@@ -29,7 +29,7 @@
 - [ ] 研究 ToLua
 - [ ] 研究 XLua
 - [ ] 了解 LuaJIT 以及 Unity 中的 Lua 优化
-- [ ] 了解 IL2CPP
+- [ ] 学习 IL 语言，了解 IL2CPP
 - [ ] 研究 ECS 框架，并以此开发一个完整的仿东方 Project 游戏（参考收藏的文章和 CrazyStorm）
 - [ ] 做一个帧同步的 Demo
 - [ ] 补一下计算机网络的知识
