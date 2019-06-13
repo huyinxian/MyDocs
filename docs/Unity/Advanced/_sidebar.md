@@ -16,6 +16,7 @@
 * **游戏热更新**
     * [Lua基础](Unity/Advanced/Lua基础)
     * [ToLua基础示例](Unity/Advanced/ToLua基础示例)
+    * [Jenkins自动化打包](Unity/Advanced/Jenkins自动化打包)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
     * [线性代数基础](Unity/Advanced/线性代数基础)

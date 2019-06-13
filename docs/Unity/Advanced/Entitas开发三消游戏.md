@@ -39,9 +39,13 @@ Entitas 框架中的主要逻辑都集中在各个系统中，所以如何规划
 
 为了让珠子具备良好的移动以及消除效果，项目使用了 DoTween 作为缓冲动画插件。DoTween 动画统一提供了名为 `OnComplete` 的回调函数接口，当珠子的移动动画结束时，`MoveCompleteSystem` 将会捕捉到该实体对象并进行消除逻辑的判断。
 
-### 珠子交换功能
+### 消除逻辑判断
 
-珠子交换存在两种结果，第一种是符合交换规则，进行珠子消除；第二种是不符合交换规则，需要把这两个珠子的位置还原。这一部分的逻辑可以写成一个响应式系统，该系统主要监控那些进行了移动的珠子，判断它们移动之后是否符合横排或者竖排包含三个以上相同元素的情况。代码部分对应的是 `GetSameColorSystem`：
+珠子的移动分为下落和主动交换，这两种情况都需要进行消除逻辑的判断（也就是计算相邻的同色珠子）。主动交换较为特殊，当珠子交换后不满足消除条件时，需要将交换的两个珠子进行还原。这两种功能分别对应：`ExchangeSystem`、`ExchangeBackSystem`。
+
+### 同色珠子的计算功能
+
+该功能主要是判断珠子交换后是否能够形成一条可以进行消除的链。代码部分对应的是 `GetSameColorSystem`：
 
 ```csharp
 private void GetSame(GameEntity entity, out List<IEntity> leftSameColorItems, out List<IEntity> rightSameColorItems,
@@ -173,6 +177,37 @@ private bool CheckFormation(GameEntity entity, SpecialEliminateEffect effect)
 ```
 
 判断出形状后，就需要交由不同的消除响应式系统来处理消除效果。上述四种特殊效果分别对应系统：`EliminateSameColorSystem`、`ExplodeSystem`、`EliminateHorizontalSystem`、`EliminateVerticalSystem`。
+
+### 珠子下落以及填充
+
+珠子的下落和填充的逻辑基本是相似的。当棋盘进行了珠子消除时，`FallSystem` 会遍历整个棋盘，将所有悬空的珠子向下移动。当所有的珠子完成下落后，`FillSystem` 会对所有的空位进行填充。这两个系统的通用逻辑都是计算出当前列最底部的空位处于哪一行：
+
+```csharp
+/// <summary>
+/// 计算当前位置的珠子能够下落到哪一行
+/// </summary>
+public int GetRowsOfTheNextEmptyItem(CustomVector2 pos)
+{
+    int row = (int)pos.y;
+    for (int i = (int)pos.y - 1; i >= 0; i--)
+    {
+        var array = contexts.game.GetEntitiesWithGameItemIndex(new CustomVector2(pos.x, i)).ToArray();
+        if (array.Length == 0)
+        {
+            // 若位置为空则标记该行
+            row = i;
+        }
+        else
+        {
+            // 当遇到障碍物时跳过，当遇到珠子时终止检测
+            if (!array[0].isGameMovable) { continue; }
+            else { break; }
+        }
+    }
+
+    return row;
+}
+```
 
 ## Entitas框架常见问题
 
