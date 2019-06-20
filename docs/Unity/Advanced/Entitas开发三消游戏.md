@@ -239,6 +239,23 @@ public bool isGameEliminate {
 }
 ```
 
+你可能会注意到，项目中的某个组件使用了如下的写法：
+
+```csharp
+/// <summary>
+/// 标记当前珠子是否能够消除
+/// </summary>
+[Game]
+public class EliminateComponent : IComponent
+{
+    // 这里之所以要声明一个bool变量而不直接使用标志组件，主要原因是标志组件在赋相同的值时不会响应
+    // 例如标志组件的初始值为false，那么entity.isGameEliminate=false将不会被系统响应
+    public bool isEliminable;
+}
+```
+
+由于标志组件只有在值改变时才响应（从 true 到 false 或者反过来），所以我们需要对特殊组件添加布尔值变量，这样就可以使用 `Replace` 方法让组件得到响应。
+
 ### 监听事件的注册与系统的调用顺序
 
 如果我们需要对某个组件进行监听，通常的声明方式如下：
