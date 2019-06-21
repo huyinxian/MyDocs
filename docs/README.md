@@ -20,7 +20,7 @@
 - [ ] 把以前收藏的渲染、游戏开发相关的文章看一遍
 - [ ] 读《Unity Shader入门精要》
 - [ ] 读《3D数学基础：图形与游戏开发》
-- [ ] 读《DirectX11龙书》
+- [ ] 读《OpenGL编程指南》
 - [ ] 读《游戏引擎架构》
 - [ ] 读《Real-Time-Rendering 3rd》
 - [ ] 读《Effective C#》

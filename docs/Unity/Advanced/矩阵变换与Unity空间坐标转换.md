@@ -328,6 +328,21 @@ $$
 
 ?> 这一节所提到的所有矩阵都是对应的理想情况，如果需要向任意轴或者平面进行矩阵变换的话会要复杂很多。
 
+### 常见矩阵变换的特性
+
+| <center>变换名称</center> | <center>符合线性变换</center> | <center>符合仿射变换</center> | <center>是可逆矩阵</center> | <center>是正交矩阵</center> |
+| :--- | :--- | :--- | :--- | :--- |
+| 平移矩阵 | N | Y | Y | N |
+| 绕坐标轴旋转的旋转矩阵 | Y | Y | Y | Y |
+| 绕任意轴旋转的旋转矩阵 | Y | Y | Y | Y |
+| 按坐标轴缩放的缩放矩阵 | Y | Y | Y | N |
+| 切变矩阵 | Y | Y | Y | N |
+| 镜像矩阵 | Y | Y | Y | Y |
+| 正交投影矩阵 | Y | Y | N | N |
+| 透视投影矩阵 | N | N | N | N |
+
+这里要留意哪些矩阵变换是正交矩阵，因为正交矩阵的逆矩阵就等于转置矩阵，可以简化计算过程。
+
 ## Unity中的空间变换
 
 ---
@@ -348,4 +363,94 @@ $$
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/projection_frustum.png)
 
-视锥体中的 `Near` 和 `Far` 分别代表的是近裁剪平面和远裁剪平面，`Field of View` 则表示的是相机视野大小。透视投影所要做的工作主要是将视锥体中的点投射到近裁剪平面上。
+视锥体中的 `Near` 和 `Far` 分别代表的是近裁剪平面和远裁剪平面，`Field of View` 则表示的是相机视野大小。
+
+由已知的三个数据，我们可以得到近裁剪平面和远裁剪平面的高度：
+
+$$ nearClipPlaneHeight = 2 \cdot Near \cdot \tan \frac{FOV}{2} $$
+
+$$ farClipPlaneHeight = 2 \cdot Far \cdot \tan \frac{FOV}{2} $$
+
+相机的纵横比也很轻易地可以计算得到：
+
+$$ Aspect = \frac{nearClipPlaneWidth}{nearClipPlaneHeight} = \frac{farClipPlaneWidth}{farClipPlaneHeight} $$
+
+现在，我们可以结合之前学习过的透视投影矩阵，得到以下矩阵：
+
+$$
+\boldsymbol M =
+\begin{bmatrix}
+   \frac{cot{\frac{FOV}{2}}}{Aspect} & 0 & 0 & 0 \\
+   0 & cot{\frac{FOV}{2}} & 0 & 0 \\
+   0 & 0 & -\frac{Far+Near}{Far-Near} & -\frac{2 \cdot Near \cdot Far}{Far-Near} \\
+   0 & 0 & -1 & 0
+\end{bmatrix}
+$$
+
+上面展示的这个透视投影矩阵对 $x$、$y$、$z$ 进行了缩放（$z$ 坐标还进行了平移），计算时只需要将列矩阵乘在矩阵的右侧即可，例如坐标 $(x, y, z, 1)$ 的变换结果如下：
+
+$$
+\begin{bmatrix}
+   x\frac{\cot\frac{FOV}{2}}{Aspect} \\
+   y\cot\frac{FOV}{2} \\
+   -z\frac{Far+Near}{Far-Near}-\frac{2 \cdot Near \cdot Far}{Far-Near} \\
+   -z
+\end{bmatrix}
+$$
+
+注意，上述的投影矩阵是针对 Unity 而言的。在 Unity 中，观察空间是右手系，矩阵变换是使用的是列矩阵右乘，并且投影变换后 $z$ 分量处在 $ [-w,w] $ 之间。DirectX 中则会有些不同，各位在学习的时候要注意区分。
+
+顶点在经过透视投影之后，$w$ 分量不再是 1，此时我们可以用该分量来判断顶点是否处于视锥体中：
+
+$$ -w \leqslant x \leqslant w $$
+$$ -w \leqslant y \leqslant w $$
+$$ -w \leqslant z \leqslant w $$
+
+这种方式比起直接拿视锥体的六个面来判断要快得多，任何不满足上述条件的图元都需要被剔除或者裁剪。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/projection_matrix0.png)
+
+### 相机的正交投影
+
+正交投影的视锥体是一个长方体，因此计算要比透视投影简单。同样的，Unity 中正交投影也可以设置相关的参数：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/orthographic_frustum.png)
+
+Unity 的正交投影矩阵如下：
+
+$$
+\boldsymbol M =
+\begin{bmatrix}
+   \frac{1}{Aspect \cdot Size} & 0 & 0 & 0 \\
+   0 & \frac{1}{Size} & 0 & 0 \\
+   0 & 0 & -\frac{2}{Far-Near} & -\frac{Far+Near}{Far-Near} \\
+   0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+对于坐标 $(x, y, z, 1)$ 的变换结果如下：
+
+$$
+\begin{bmatrix}
+   \frac{x}{Aspect \cdot Size} \\
+   \frac{y}{Size} \\
+   -\frac{2z}{Far-Near}-\frac{Far+Near}{Far-Near} \\
+   1
+\end{bmatrix}
+$$
+
+可能有人会注意到，正交投影矩阵和透视投影矩阵的最后一行是不一样的。关于这一点我会在后面解释。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/orthographic_matrix0.png)
+
+?> 再次强调，透视投影变换并不是真正的投影，它仅仅只是计算出合适的 $w$ 分量，顶点坐标仍旧处在锥体或者立方体中。只有在屏幕映射的时候才是将顶点投影到 2D 平面上。
+
+### 屏幕映射
+
+在经历过透视投影、裁剪操作之后，我们就需要把三维坐标转换成屏幕上的二维坐标了。之前有提过，将齐次坐标转换成对应坐标需要使用齐次除法，说白了就是拿 $x$、$y$、$z$ 三个分量除以 $w$ 分量。通过这一步计算，我们就能够把坐标从齐次裁剪坐标空间转换到归一化设备坐标（NDC）。齐次除法得到的将是一个立方体空间，下面的两张图分别展示了透视投影和正交投影的齐次除法：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/projection_matrix1.png)
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/orthographic_matrix1.png)
+
+不过这样有一个问题，屏幕映射得到的是 2D 坐标，那么 $z$ 分量应该拿来干什么呢？一般来说，这个分量会用于深度缓冲。
