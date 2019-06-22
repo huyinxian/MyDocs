@@ -439,8 +439,6 @@ $$
 \end{bmatrix}
 $$
 
-可能有人会注意到，正交投影矩阵和透视投影矩阵的最后一行是不一样的。关于这一点我会在后面解释。
-
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/orthographic_matrix0.png)
 
 ?> 再次强调，透视投影变换并不是真正的投影，它仅仅只是计算出合适的 $w$ 分量，顶点坐标仍旧处在锥体或者立方体中。只有在屏幕映射的时候才是将顶点投影到 2D 平面上。
