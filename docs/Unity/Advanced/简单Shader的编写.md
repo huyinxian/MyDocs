@@ -283,4 +283,33 @@ ENDCG
 
 ---
 
-我们在之前的代码编写中用到了不少的语义。
+我们在之前的代码编写中用到了不少的语义，比如我们需要在输入输出变量的后面跟上一个 `SV_POSITION` 或者别的名称。这些大写的名称实际上是 Cg/HLSL 提供的语义，如果你之前有了解过 DirectX 的话就不会感到陌生。语义的作用是表达它所修饰的参数的含义，让 Shader 知道从哪里读取数据，并把数据输出到哪里。
+
+下面将展示 Unity 中常用的语义。首先是应用阶段传给顶点着色器常用的语义：
+
+| <center>语义</center> | <center>描述</center> |
+| :--- | :--- |
+| POSITION | 模型空间中的定点位置，通常为 float4 |
+| NORMAL | 顶点法线，通常为 float3 |
+| TANGENT | 顶点切线，通常为 float4 |
+| TEXCOORDn，例如 TEXCOORD0 | 该顶点的纹理坐标，TEXCOORD0 表示第一组纹理坐标。通常为 float2 或者 float4 |
+| COLOR | 顶点颜色，通常为 fixed4 或者 float4 |
+
+TEXCOORDn 的数目与 ShaderModel 有关，版本越高 n 越大，具体数值需要看对应版本的文档。
+
+接下来是顶点着色器到片元着色器的语义：
+
+| <center>语义</center> | <center>描述</center> |
+| :--- | :--- |
+| SV_POSITION | 裁剪空间中的顶点坐标，结构体中必须要包含一个用该语义修饰的变量。等同于 DirectX9 中的 POSITION |
+| COLOR0 | 用于输出第一组顶点颜色 |
+| COLOR1 | 用于输出第二组顶点颜色 |
+| TEXCOORD0~TEXCOORD7 | 用于输出纹理坐标 |
+
+除了 SV_POSITION 具有特殊的含义之外，用其它语义修饰的变量可以存储任意值。例如当我们需要把一些数据从顶点着色器传到片元着色器时，可以用 TEXCOORD0 来存储。
+
+| <center>语义</center> | <center>描述</center> |
+| :--- | :--- |
+| SV_TARGET | 将数据输出到渲染目标中。等同于 DirectX9 中的 COLOR |
+
+?> 注意，在 DirectX10 中出现了以 `SV_` 开头的语义，用于替代旧版本的某些语义。我们在编写代码时最好使用最新的语义，否则有可能会出现平台不兼容的问题。
