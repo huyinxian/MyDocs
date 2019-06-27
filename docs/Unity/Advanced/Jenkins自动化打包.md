@@ -84,3 +84,43 @@
 点击控制台输出，我们可以看到项目构建完成之后打印出了一段信息：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/15.png)
+
+## SVN部署流程
+
+---
+
+项目开发常用的版本管理工具有两个，一个是 SVN，另一个则是 GitLab。这里我以 SVN 为例来介绍一下 Jenkins 的部署流程。
+
+### SVN服务端搭建
+
+SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 VisualSVN Server。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/16.png)
+
+接下来，我们需要在仓库中新建一个空项目：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/17.png)
+
+除此之外，项目还需要有参与用户。我们可以为项目组中的每个成员新建一个账户：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/18.png)
+
+顺带一提，项目的属性中可以对项目的读写权限进行设置，各位可以根据需要自行修改：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/19.png)
+
+### SVN客户端搭建
+
+服务端搭建完毕后，我们需要在客户端进行 SVN 的操作。客户端部分用的是 `TortoiseSvn`，官方提供了中文语言包，如果刚上手觉得英文界面不熟悉的话可以自己安装一个。
+
+首先，我们需要把项目从服务端上拉下来。在右键弹出的菜单中选择 `Check Out`，输入项目的地址以及存储路径：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/20.png)
+
+接着登录我们之前创建好的账户：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/21.png)
+
+当然，由于项目是空的，所以里面只有一些默认的文件：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/22.png)
