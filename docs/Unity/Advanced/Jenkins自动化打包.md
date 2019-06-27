@@ -135,7 +135,7 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
     svn revert %ProjectPath%
     svn update %ProjectPath% --username huyinxian --password 123456
 
-`ProjectPath` 是我们之前定义的字符串参数，这个字符串参数存储的是项目的路径。你也可以选择在命令行中手动输入路径，但为了方便起见还是建议把它写成参数的形式。上述的三行命令调用 SVN 的功能，分别是清理、回滚、更新。
+`ProjectPath` 是我们之前定义的字符串参数，这个字符串参数存储的是项目的路径。你也可以选择在命令行中手动输入路径，但为了方便起见还是建议把它写成参数的形式。上述的三行命令调用 SVN 的功能，分别是清理、撤销、更新。
 
 注意，虽然这些语句是在 Windows 命令行中执行的，SVN 在安装时也自动对环境变量进行了配置，但我们仍需要在 Jenkins 中额外配置环境变量。回到 Jenkins 首页，点击构建执行状态，选中对应的节点：
 
