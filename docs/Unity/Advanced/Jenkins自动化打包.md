@@ -124,3 +124,27 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
 当然，由于项目是空的，所以里面只有一些默认的文件：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/22.png)
+
+?> SVN 的使用教程各位可以自行查阅相关资料，我这里就不作赘述了。
+
+### Jenkins调用SVN
+
+沿用之前创建的 Jenkins 任务，我们稍作一些修改。首先，把我们自定义的字符串参数以及工作空间路径修改成项目的存储路径，然后将命令行语句修改成以下形式：
+
+    svn cleanup %ProjectPath%
+    svn revert %ProjectPath%
+    svn update %ProjectPath% --username huyinxian --password 123456
+
+`ProjectPath` 是我们之前定义的字符串参数，这个字符串参数存储的是项目的路径。你也可以选择在命令行中手动输入路径，但为了方便起见还是建议把它写成参数的形式。上述的三行命令调用 SVN 的功能，分别是清理、回滚、更新。
+
+Jenkins 调用其它程序的功能时需要额外配置环境变量。回到 Jenkins 首页，点击构建执行状态，选中对应的节点：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/23.png)
+
+新建一个环境变量 `paths`，保存 SVN 的目录。以后如果需要调用其它的程序，也可以直接在这个变量中添加，路径之间用 `;` 隔开。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/24.png)
+
+接下来执行构建，查看输出信息：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/25.png)
