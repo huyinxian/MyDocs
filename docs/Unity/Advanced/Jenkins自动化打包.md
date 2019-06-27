@@ -148,3 +148,31 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
 接下来执行构建，查看输出信息：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/25.png)
+
+### Jenkins调用Unity进行打包
+
+在开始打包之前，首先让把项目上传至 SVN 服务端：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/26.png)
+
+Unity 提供了相关的方法供我们直接调用项目中的函数。修改构建任务的配置参数，添加 Unity3D 的构建：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/27.png)
+
+`Unity3d installation name` 是我们之前设置的全局工具配置，里面包含了 Unity 的安装目录。下面的一行语句代表的是 Unity 命令行参数，它们的含义如下：
+
+* `-projectpath`：工程目录。
+* `-quit`：执行完所有命令后退出程序。
+* `-batchmode`：运行 Unity 时不会弹出编辑器界面。
+* `-excuteMethod`：执行方法。
+* `-logFile`：打印日志文件。
+
+在运行上述命令时，要记得把 Unity 编辑器关闭掉。另外，工程目录一定要定位到项目的根目录下，否则 Unity 将无法查找到对应的类文件以及函数。打包成功后可以查看日志信息：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/28.png)
+
+我使用的 Unity 安装了 PC、Android 两个平台的组件，因此 Jenkins 构建完毕后会得到两个平台的包（IOS 文件夹是空的）：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/29.png)
+
+?> Unity 命令行还提供了其它的参数，感兴趣的可以自行查阅资料。
