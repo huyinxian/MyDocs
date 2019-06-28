@@ -149,7 +149,7 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/25.png)
 
-### Jenkins调用Unity进行打包
+### PC版打包
 
 在开始打包之前，首先让把项目上传至 SVN 服务端：
 
@@ -164,19 +164,56 @@ Unity 提供了相关的方法供我们直接调用项目中的函数。修改�
 * `-projectpath`：工程目录。
 * `-quit`：执行完所有命令后退出程序。
 * `-batchmode`：运行 Unity 时不会弹出编辑器界面。
-* `-excuteMethod`：执行方法。
+* `-executeMethod`：执行某个类文件中的静态方法。
 * `-logFile`：打印日志文件。
 
-在运行上述命令时，要记得把 Unity 编辑器关闭掉。另外，工程目录一定要定位到项目的根目录下，否则 Unity 将无法查找到对应的类文件以及函数。打包成功后可以查看日志信息：
+在打完包之后，我们还可以额外调用 WinRAR 对包体进行压缩，生成一个压缩包（如果不需要的话可以不做这一步）。为了方便 WinRAR 修改压缩包的名称，我们可以对原本的资源加载框架进行了一些小的修改：
+
+```csharp
+[MenuItem("Build/PC包")]
+public static void BuildPC()
+{
+    // 打AB包
+    BundleEditor.Build();
+
+    // 打App前先把AB包临时拷到StreamingAssets下
+    string assetBundlesPath = AppConst.AssetBundlesOutputPath + "/" + EditorUserBuildSettings.activeBuildTarget.ToString() + "/";
+    Copy(assetBundlesPath, AppConst.AssetBundlesLoadingPath);
+
+    string productName = PlayerSettings.productName;
+    string dir = productName + "_" + EditorUserBuildSettings.activeBuildTarget.ToString() + string.Format("_{0:yyyy_MM_dd_HH_mm}", DateTime.Now);
+    string name = string.Format("{0}.exe", productName);
+    string savePath = AppConst.WindowsPath + "/" + dir + "/" + name;
+
+    BuildPipeline.BuildPlayer(FindEnableScenes(), savePath, EditorUserBuildSettings.activeBuildTarget, BuildOptions.None);
+
+    // 把临时拷贝的AB包删掉
+    DeleteDir(AppConst.AssetBundlesLoadingPath);
+
+    WriteBuildName(name);
+}
+
+/// <summary>
+/// 将App名称写入到txt文件中，供打包机调用
+/// </summary>
+public static void WriteBuildName(string name)
+{
+    FileInfo fileInfo = new FileInfo(Application.dataPath + "/../BuildName.txt");
+    StreamWriter sw = fileInfo.CreateText();
+    sw.WriteLine(name);
+    sw.Close();
+    sw.Dispose();
+}
+```
+
+上述代码会额外在项目根目录下生成一个 `BuildName` 的文本文件，WinRAR 在进行压缩时就可以从这个文件中读取出包名。
+
+一切准备就绪，我们可以执行 Jenkins 的构建了。在正式构建之前，一定要记得把还在运行的 Unity 编辑器关闭掉。另外，工程目录一定要定位到项目的根目录下，否则 Unity 将无法查找到对应的类文件以及函数。打包成功后可以查看日志信息：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/28.png)
 
-我使用的 Unity 安装了 PC、Android 两个平台的组件，因此 Jenkins 构建完毕后会得到两个平台的包（IOS 文件夹是空的）：
+最终得到的包如下：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/29.png)
 
-?> Unity 命令行还提供了其它的参数，感兴趣的可以自行查阅资料。
-
-### PC版本打包
-
-我们在上一小节中已经进行了 Unity 的打包，但由于这种打包方式会把所有平台的包全都打一遍，因此我们还需要对原本项目的打包脚本进行一些修改。
+?> Unity 命令行参数以及 WinRAR 的压缩命令各位可以自行查阅资料。
