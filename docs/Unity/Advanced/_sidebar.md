@@ -23,6 +23,7 @@
     * [矩阵变换与Unity空间坐标转换](Unity/Advanced/矩阵变换与Unity空间坐标转换)
     * [UnityShader入门](Unity/Advanced/UnityShader入门)
     * [简单Shader的编写](Unity/Advanced/简单Shader的编写)
+    * [基础光照模型](Unity/Advanced/基础光照模型)
 * **UI**
     * [UGUI事件注册](Unity/Advanced/UGUI事件注册)
     * [商业常用UI框架概览](Unity/Advanced/商业常用UI框架概览)
