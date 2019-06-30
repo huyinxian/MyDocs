@@ -149,7 +149,11 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/25.png)
 
-### PC版打包
+## PC端打包
+
+---
+
+### 打包流程
 
 在开始打包之前，首先让把项目上传至 SVN 服务端：
 
@@ -231,3 +235,126 @@ public static void WriteBuildName(string name)
 归档的文件默认保存在 Jenkins 安装目录的 `jos\任务名\lastSuccessful\archive` 下：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/32.png)
+
+### 添加更多的配置参数
+
+事实上，我们在正式的开发中不可能只用到一个参数，像是版本号、构建次数、项目名称等等这些都可以作为 Jenkins 的配置参数。为了让 Unity 能够获取到 Jenkins 中设置的参数，我们需要把它们添加到命令行中：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/33.png)
+
+Jenkins 的执行命令其实就是 Windows 的批处理命令，而 Unity 也提供了获取命令行语句的 API：
+
+```csharp
+/// <summary>
+/// 设置PC的构建配置
+/// </summary>
+public static string SetPCBuildSetting(BuildSetting buildSetting)
+{
+    // 后缀名
+    string suffix = string.Empty;
+
+    if (!string.IsNullOrEmpty(buildSetting.version))
+    {
+        PlayerSettings.bundleVersion = buildSetting.version;
+        suffix += "_" + buildSetting.version;
+    }
+    if (!string.IsNullOrEmpty(buildSetting.name))
+    {
+        PlayerSettings.productName = buildSetting.name;
+    }
+    if (buildSetting.isDebug)
+    {
+        EditorUserBuildSettings.development = true;
+        EditorUserBuildSettings.connectProfiler = true;
+        suffix += "_Debug";
+    }
+    else
+    {
+        EditorUserBuildSettings.development = false;
+        EditorUserBuildSettings.connectProfiler = false;
+    }
+
+    return suffix;
+}
+
+/// <summary>
+/// 获取PC的构建配置
+/// </summary>
+public static BuildSetting GetPCBuildSetting()
+{
+    // 将命令行的语句提取为字符串数组
+    string[] parameters = Environment.GetCommandLineArgs();
+    BuildSetting buildSetting = new BuildSetting();
+    foreach (string str in parameters)
+    {
+        if (str.StartsWith("Version"))
+        {
+            var temp = str.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            if (temp.Length == 2)
+            {
+                buildSetting.version = temp[1].Trim();
+            }
+        }
+        else if (str.StartsWith("Name"))
+        {
+            var temp = str.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            if (temp.Length == 2)
+            {
+                buildSetting.name = temp[1].Trim();
+            }
+        }
+        else if (str.StartsWith("Debug"))
+        {
+            var temp = str.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            if (temp.Length == 2)
+            {
+                bool.TryParse(temp[1], out buildSetting.isDebug);
+            }
+        }
+    }
+
+    return buildSetting;
+}
+
+public class BuildSetting
+{
+    public string version = "";
+    public string name = "";
+    public bool isDebug = false;
+}
+```
+
+完成编辑器脚本的修改之后，我们再进行 Jenkins 构建。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/34.png)
+
+最终打包得到的文件会包含对应的版本号，并且当 Untiy 处于 Debug 模式构建时，包名上也会进行标注。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/35.png)
+
+### 配置表备份
+
+Jenkins 的每个任务都会有一个对应的配置表，里面记录了该任务的相关设置。配置信息可以在 Jenkins 安装目录的 `jos\任务名\config.xml` 中找到，当你需要在其它设备上建立相同任务时就可以替换该任务的配置表文件。
+
+## 安卓端打包
+
+---
+
+新建一个安卓打包任务，配置和 PC 打包基本差不多，只需要稍微改动一下调用的函数名称即可。由于安卓打包得到的是 APK，所以这里就不再对其进行压缩了。
+
+### 配置环境
+
+打安卓平台的包需要先在 Unity 中配置好 SDK 和 JDK，然后再生成打包所需的密钥。生成密钥可以在任意位置调用命令行，然后输入以下命令：
+
+```
+keytool -genkey -alias android.keystore -keyalg RSA -validity 36500 -keystore loadassetframework.keystore
+```
+
+根据命令行提示的语句依次输入信息，完成后将在命令行调用的文件夹位置生成一个 `.keystore` 的密钥文件，然后我们就可以在 Unity 的 PlayerSettings 中设置密钥。
+
+不过这样有一个问题，我们每次在打安卓包时，都需要在 PlayerSettings 中输入密钥的密码，所以我们得把这一工作放到代码中来做：
+
+```csharp
+PlayerSettings.Android.keystorePass = "123456";
+PlayerSettings.Android.keyaliasPass = "123456";
+```

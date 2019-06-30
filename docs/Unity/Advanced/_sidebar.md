@@ -19,7 +19,7 @@
 * **游戏热更新**
     * [Lua基础](Unity/Advanced/Lua基础)
     * [ToLua基础示例](Unity/Advanced/ToLua基础示例)
-    * [IRuntime热更新](Unity/Advanced/IRuntime热更新)
+    * [ILRuntime热更新](Unity/Advanced/ILRuntime热更新)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
     * [线性代数基础](Unity/Advanced/线性代数基础)
