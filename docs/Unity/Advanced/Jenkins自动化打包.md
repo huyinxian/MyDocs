@@ -217,3 +217,17 @@ public static void WriteBuildName(string name)
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/29.png)
 
 ?> Unity 命令行参数以及 WinRAR 的压缩命令各位可以自行查阅资料。
+
+### 归档成品
+
+完成了 Jenkins 的自动化构建后，我们还可以对成品进行归档，以便日后进行查找。归档成品需要在任务的配置中设置成品所在的目录：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/30.png)
+
+成品归档完成之后，可以在构建任务的主界面进行查看并下载：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/31.png)
+
+归档的文件默认保存在 Jenkins 安装目录的 `jos\任务名\lastSuccessful\archive` 下：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/32.png)
