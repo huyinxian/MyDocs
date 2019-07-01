@@ -379,4 +379,4 @@ PlayerSettings.Android.keyaliasPass = "123456";
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/39.png)
 
-不过我在打包时虽然也遇到了这个情况，但是并没有出现不能够打包的情形。
+?> 我在使用 Jenkins 打包时也会有这个提示，但是整体的打包流程并没有受到影响，个人猜测可能是最新的版本进行了修复。
