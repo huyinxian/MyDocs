@@ -2,6 +2,8 @@
 
 `Jenkins` 是基于 Java 开发的一种持续集成的工具，用于监控持续重复的工作。对于 Unity 开发而言，Jenkins 可以用于持续地发布测试版本，避免每次进行测试时都需要开发人员手动进行打包，大大地减少了重复性的工作。
 
+!> 注意，只有 Untiy Pro 版本才能够与 Jenkins 交互。
+
 ## Jenkins 环境配置
 
 ---
@@ -137,11 +139,7 @@ SVN 的服务端使用的是 `VisualSVN Server`。安装完毕后，打开 Visua
 
 `ProjectPath` 是我们之前定义的字符串参数，这个字符串参数存储的是项目的路径。你也可以选择在命令行中手动输入路径，但为了方便起见还是建议把它写成参数的形式。上述的三行命令调用 SVN 的功能，分别是清理、撤销、更新。
 
-注意，虽然这些语句是在 Windows 命令行中执行的，SVN 在安装时也自动对环境变量进行了配置，但我们仍需要在 Jenkins 中额外配置环境变量。回到 Jenkins 首页，点击构建执行状态，选中对应的节点：
-
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/23.png)
-
-新建一个环境变量 `paths`，保存 SVN 的目录。以后如果需要调用其它的程序，也可以直接在这个变量中添加，路径之间用 `;` 隔开。
+注意，虽然这些语句是在 Windows 命令行中执行的，SVN 在安装时也自动对环境变量进行了配置，但我们仍需要在 Jenkins 中额外配置环境变量。进入到 Jenkins 的配置页面，添加 SVN 的路径：
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/24.png)
 
@@ -358,3 +356,27 @@ keytool -genkey -alias android.keystore -keyalg RSA -validity 36500 -keystore lo
 PlayerSettings.Android.keystorePass = "123456";
 PlayerSettings.Android.keyaliasPass = "123456";
 ```
+
+除此之外，你也可以给安卓打包添加其它的参数，比如发布渠道、是否使用多线程渲染、是否使用 IL2CPP 编译等等。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/36.png)
+
+### 安卓打包的几个问题
+
+**1.Unable to locate Android SDK**
+
+这个问题就是没有在 Jenkins 中设置 SDK 的环境变量，只需要在系统设置中补上即可：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/37.png)
+
+**2.Validating Project structure**
+
+当使用访客账号登录时会缺少权限，需要为 Jenkins 服务指定登录账号。打开服务，找到 Jenkins：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/38.png)
+
+把登录电脑的账户填进去：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/Jenkins%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85/39.png)
+
+不过我在打包时虽然也遇到了这个情况，但是并没有出现不能够打包的情形。
