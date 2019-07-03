@@ -345,7 +345,7 @@ $$
 
 这里要留意哪些矩阵变换是正交矩阵，因为正交矩阵的逆矩阵就等于转置矩阵，可以简化计算过程。
 
-## Unity中的空间变换
+## Unity中的坐标空间变换
 
 ---
 
@@ -359,7 +359,9 @@ $$
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/unity_camera_cartesian.png)
 
-### 相机的透视投影
+?> Unity 提供了 `MVP` 矩阵，该矩阵是模型变换、观察变换、投影变换的合并，可以直接把模型顶点变换到裁剪空间。
+
+### 投影变换中的透视投影
 
 在 Unity 中，相机的透视投影呈现出的是一个视锥体，如下图所示。
 
@@ -412,7 +414,7 @@ $$ -w \leqslant z \leqslant w $$
 
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/projection_matrix0.png)
 
-### 相机的正交投影
+### 投影变换中的正交投影
 
 正交投影的视锥体是一个长方体，因此计算要比透视投影简单。同样的，Unity 中正交投影也可以设置相关的参数：
 
@@ -454,3 +456,33 @@ $$
 ![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/orthographic_matrix1.png)
 
 不过这样有一个问题，屏幕映射得到的是 2D 坐标，那么 $z$ 分量应该拿来干什么呢？一般来说，这个分量会用于深度缓冲。
+
+## 法线变换
+
+---
+
+法线变换是较为特殊的一种变换。对于一个游戏模型的顶点而言，它通常会携带许多额外的信息，而**法线**就是一种。当我们对一个模型进行变换时，不仅要对顶点进行变换，更要变换它的法线。法线通常用于计算光照。
+
+我们知道，法线与表面是垂直的。但问题是，如果我们在变换顶点时也对法线使用相同的变换矩阵，那么很可能就会导致法线不再垂直于表面。在解释为什么会出现这种问题前，我们需要先来了解一下**切线**。切线其实也是顶点所携带的一种信息，它通常与纹理空间对齐，并且与法线垂直。由于切线是由两个顶点的差值计算得到的，因此可以直接使用变换顶点的矩阵来对切线变换。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/normal_tangent.png)
+
+由于切线都是向量，不受到平移的影响，因此这里我们可以用 3X3 矩阵来对顶点进行变换（包括下面的法线变换也是）：
+
+$$ \boldsymbol T_{B} = \boldsymbol M_{A \rightarrow B} \boldsymbol T_{A} $$
+
+在上述公式中，$\boldsymbol T_{A}$ 和 $\boldsymbol T_{B}$ 分别表示在坐标空间 A 下和坐标空间 B 下的切线方向。对于切线而言，直接使用 $\boldsymbol M_{A \rightarrow B}$ 是没有问题的。但如果你要对法线也这么干，那么很有可能就会出现下图这种情况：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/%E7%9F%A9%E9%98%B5%E5%8F%98%E6%8D%A2%E4%B8%8EUnity%E7%A9%BA%E9%97%B4%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2/transform_normal.png)
+
+显然，我们得另找一种矩阵来变换法线。现在已知的是同一个顶点的切线和法线是垂直的，所以有 $\boldsymbol T_{A} \cdot \boldsymbol N_{A} = 0$。给定一个变换矩阵 $\boldsymbol M_{A \rightarrow B}$，那么就有 $\boldsymbol T_{B} = \boldsymbol M_{A \rightarrow B} \boldsymbol T_{A}$。现在假设法线变换的矩阵为 $\boldsymbol G$，那么就有
+
+$$ \boldsymbol T_{B} \cdot \boldsymbol N_{B} = (\boldsymbol M_{A \rightarrow B}\boldsymbol T_{A}) \cdot (\boldsymbol G \boldsymbol N_{A}) = 0 $$
+
+对上述公式进行转置，推导可得
+
+$$ \boldsymbol T_{A}^T (\boldsymbol M_{A \rightarrow B}^T \boldsymbol G) \boldsymbol N_{A} = 0 $$
+
+由于 $\boldsymbol T_{A}\cdot\boldsymbol N_{A}=0$，因此如果 $\boldsymbol M_{A \rightarrow B}^T \boldsymbol G=\boldsymbol I$，那么等式成立。最终得到 $\boldsymbol G = (\boldsymbol M_{A \rightarrow B}^{-1})^T$，也就是说用原变换矩阵的逆转置矩阵就可以得到正确的法线变换结果。
+
+另外，若变换矩阵是正交矩阵，那么就可以直接用顶点的变换矩阵来进行法线变换。如果变换只包含旋转，那么该变换矩阵就是正交矩阵。若变换只包含旋转和统一缩放，那么就可以用缩放系数 $k$ 来进行变换，即 $\frac{1}{k}\boldsymbol M_{A \rightarrow B}$。如果变换中存在非统一变换，那么就只能够求解逆矩阵了。
