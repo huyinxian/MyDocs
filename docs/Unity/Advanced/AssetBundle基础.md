@@ -18,7 +18,7 @@
 
 WWW 卸载很简单，使用 `www = null` 或者 `www.dispose()` 就可以移除对 www stream 的引用。
 
-### AssetBundle内存占用
+## AssetBundle内存占用
 
 ---
 
