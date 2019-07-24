@@ -19,7 +19,7 @@
 * **游戏热更新**
     * [Lua基础](Unity/Advanced/Lua基础)
     * [ToLua基础示例](Unity/Advanced/ToLua基础示例)
-    * [Lua与C#交互优化](Unity/Advanced/Lua与C#交互优化)
+    * [Lua与C#交互优化](Unity/Advanced/Lua与CSharp交互优化)
     * [ILRuntime热更新](Unity/Advanced/ILRuntime热更新)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
