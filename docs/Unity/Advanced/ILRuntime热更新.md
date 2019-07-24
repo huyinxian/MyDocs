@@ -22,3 +22,23 @@
 * 如果还存在未下载的资源包，那么下载对应的资源包。
 * 下载完成后需要进行 MD5 校验，保证文件的完整性。
 * 全部下载无误后进入游戏，开始加载资源。
+
+## 客户端打包
+
+---
+
+### 计算MD5码
+
+计算文件 MD5 码的方法有很多，我这里就不贴代码了，各位可以自行搜索资料或者直接看项目源码。首先，我们需要写一个编辑器扩展，用于选择 MD5 配置表以及热更新打包。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/ILRuntime%E7%83%AD%E6%9B%B4%E6%96%B0/01.png)
+
+当然，第一次打包的时候我们肯定是没有配置表的，所以我们需要在正常的打包流程中加入 MD5 配置表的生成逻辑，然后进行第一次打包。
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/ILRuntime%E7%83%AD%E6%9B%B4%E6%96%B0/02.png)
+
+完成了第一次打包之后，我们就会得到 MD5 的配置表。这时候再选择热更新打包，然后根据 MD5 进行对比，筛选出需要热更新的包。本次版本需要热更新的包可以额外放到另一个文件夹中，另外我们也可以生成一个配置表记录此次更新了哪些包。 
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/ILRuntime%E7%83%AD%E6%9B%B4%E6%96%B0/03.png)
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/ILRuntime%E7%83%AD%E6%9B%B4%E6%96%B0/04.png)
