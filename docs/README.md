@@ -20,12 +20,13 @@
 - [ ] 把以前收藏的渲染、游戏开发相关的文章看一遍
 - [ ] 读《Unity Shader入门精要》
 - [ ] 读《3D数学基础：图形与游戏开发》
-- [ ] 读《DX11 龙书》
+- [ ] 读《DX11龙书》
 - [ ] 读《OpenGL编程指南》
 - [ ] 读《游戏引擎架构》
 - [ ] 读《Real-Time-Rendering 3rd》
 - [ ] 读《Effective C#》
 - [ ] 读《C++ Primer》
+- [ ] 读《Lua程序设计》
 - [ ] LeetCode、牛客网刷题
 - [ ] 研究 ToLua
 - [ ] 研究 XLua
