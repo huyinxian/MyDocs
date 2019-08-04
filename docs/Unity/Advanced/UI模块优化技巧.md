@@ -127,3 +127,44 @@ NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的�
 相比于令人头疼的 UGUI，在 NGUI 中你只需要手动调整 UI 元素的深度就可以把 DrawCall 降下来，远没有 UGUI 那么复杂。所以，单从 DrawCall 控制这一点来说，NGUI 要比 UGUI 好很多，特别是对于复杂界面的制作来说更是如此。
 
 !> 对于 UGUI 而言，重叠是一个需要重视的问题，因为它是实实在在会影响 UI 性能的重要因素。
+
+## 网格更新
+
+---
+
+### 更新机制
+
+**NGUI**
+
+在 NGUI 中，触发网格重建时分为两种方式，第一种是使用 `UIPanel.FillDrawCall` 更新单个 DrawCall，第二种是使用 `UIPanel.FillAllDrawCalls` 更新所有 DrawCall。由于一个 Panel 中会涉及到多个 DrawCall，一个 DrawCall 就对应了一个 Mesh。因此，我们要想办法让 NGUI 尽量调用第一种方法进行更新，否则将很容易让 UI 绘制出现峰值。
+
+**UGUI**
+
+与 NGUI 不同，UGUI 在每次更新时都会调用 `Canvas.BuildBatch` 更新所有的 DrawCall，所以开销上看起来是要比 NGUI 更大的。不过由于 UGUI 是 Unity 提供的原生 UI 框架，其更新的操作直接运行于原生代码上，因此它的效率反而要比 NGUI 这种第三方框架要高（可能这也是 UGUI 会进行暴力更新的主要原因）。
+
+在 Unity 5.2 版本之后，网格合并的操作更多的是放到了子线程中，因而我们还需要关注其他的几个方法：
+
+* WaitingForJob
+* PutGeometryJobFence
+* BatchRenderer.Flush（开启多线程渲染之后）
+
+### NGUI与UGUI如何进行网格合并
+
+说了这么多，那么 UGUI 和 NGUI 在更新网格时有什么不同呢？请看下图：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/04.png)
+
+NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会被合并到一个 Mesh 中。在上图中，血条和文本分别对应一个 DrawCall，在更新网格时并不会相互进行影响。
+
+反观 UGUI，它的网格的划分是依据 Canvas 进行的，同一个 Canvas 下的元素会被划分进一个 Mesh，因此血条和文本被合并成了一个 DrawCall。不过这样一来，当某个元素发生改变时，该界面对应的 Mesh 就需要进行更新。
+
+### 对界面制作的影响
+
+了解到 NGUI 和 UGUI 的网格更新机制后，我们就需要在制作界面时注意以下几点：
+
+* UGUI：拆分 Canvas。
+* NGUI：控制 FillAllDrawCalls；拆分 UIPanel。
+
+当你修改 UGUI 中某个 Canvas 的元素时，UGUI 会将整个 Canvas 的网格进行重建，因此一定要注意对 Canvas 的划分，否则某些简单但频繁地变动将影响整个界面的性能表现。
+
+在 NGUI 里，我们可以通过一些巧妙的方式控制 Mesh 的更新，将影响范围控制在修改的元素所在的 Mesh 中。当然，这种做法的容错率其实比较低，很容易就会引发整个 Panel 的重建，所以不管对于 UGUI 还是 NGUI 都需要先对 Canvas 和 UIPanel 进行拆分，以提高容错率。
