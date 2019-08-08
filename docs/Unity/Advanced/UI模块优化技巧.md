@@ -90,9 +90,9 @@ NGUI 和 UGUI 都有 DrawCall 合并，下面我将介绍一下这两种框架�
 
 **NGUI**
 
-NGUI 的合并规则非常简单，`UIPanel` 和 `UIWidget` 都具有 `Depth` 值，合并时就会以 `UIPanel` 为单位，对每个 Panel 下的 `UIWidget` 进行排序。若相邻的 UI 元素为同一个图集，那么就会合并为一个 DrawCall。举个例子，假设第 1-50 层的 UI 使用了图集 A，第 51 层使用了图集 B，第 52-100 使用了图集 A。根据规则，前 50 层会被合并为一个 DrawCall，而 52-100 层则会合并成另一个 DrawCall，再加上第 51 层总计为 3 个 DrawCall。
+NGUI 中具有 `Depth` 值，合并时就会以 `UIPanel` 为单位，对每个 Panel 下的 `UIWidget` 进行排序。若相邻的 UI 元素为同一个图集，那么就会合并为一个 DrawCall。举个例子，假设第 1-50 层的 UI 使用了图集 A，第 51 层使用了图集 B，第 52-100 使用了图集 A。根据规则，前 50 层会被合并为一个 DrawCall，而 52-100 层则会合并成另一个 DrawCall，再加上第 51 层总计为 3 个 DrawCall。
 
-对于某些 DrawCall 较高的界面，可以通过调整图集以及层级顺序，将界面的 DrawCall 降到一个很低的值。
+NGUI 中的 UI 元素的遮挡顺序与 z 坐标无关，主要由渲染顺序决定。对于某些 DrawCall 较高的界面，可以通过调整图集以及层级顺序，将界面的 DrawCall 降到一个很低的值。如果各位对于刚刚的内容存在一些疑惑，可以去看一下 `UIPanel.FillAllDrawCalls` 中的代码，里面包含了 NGUI 的合并逻辑。
 
 **UGUI**
 
