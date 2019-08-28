@@ -278,7 +278,7 @@ public void DettachCanvas(bool isSelected)
 }
 ```
 
-当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越小越好，我们得看实际的开销。因此，对于经常需要变动的元素，可以将它拆分出来，以避免动态元素的更新对整个产生影响。
+当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越小越好，我们得看实际的开销。因此，对于经常需要变动的元素，可以将它拆分出来，将动态元素引起的界面重构控制在一个很小的范围内。
 
 ### 降低更新频率
 
