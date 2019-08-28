@@ -155,7 +155,7 @@ NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的�
 
 使用 UGUI 需要分清楚**网格更新**与**网格重建**这两个概念。更新是指 UI 元素的某些属性发生变化需要重新绘制，比如修改 UI 颜色就是在修改顶点颜色，所以更新其实就是在修改顶点属性（UIVertex）。至于重建操作，指的是当 UI 元素发生变动时需要进行网格重建。
 
-网格更新的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行重绘。在 UGUI 中，UI 元素的更新会被分成两种，第一种是 `RectTransform` 发生了变化（比如修改了 `Size`、`Anchor`、`Pivot` 会对 `UIVertext.position` 产生影响），第二种是渲染元素发生了变化（比如修改了 Image 和 Text 的颜色）。只是单纯的修改 UI 元素位置并不会引起网格更新。
+网格更新的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。之前在元素更新中有提到，UGUI 会根据 UI 元素的变化情况将它放到两个队列中，如果没有变化的话则不会进行更新。也就是说，这个方法在静态界面中几乎是没有开销的。
 
 网格重建（合并）的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI 元素发生变动时都会引发整个 Canvas 的网格重建（哪怕只有一个元素改变了）。这里的变动指的是影响 UI 元素外观的改动，包括修改 `SpriteRenderer` 的图片、位置、缩放、文本等等。
 
@@ -166,6 +166,8 @@ NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的�
 * WaitingForJob
 * PutGeometryJobFence
 * BatchRenderer.Flush（开启多线程渲染之后）
+
+`Canvas.BuildBatch` 放到子线程后，我们一般来说是看不到这个方法带来的开销。但是请注意，这两者并不是完全的并行关系，Unity 需要等待合并返回的结果，所以当网格重建过于频繁时仍然会带来性能问题。
 
 ### NGUI与UGUI如何进行网格合并
 
