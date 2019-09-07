@@ -123,7 +123,13 @@ NGUI 中的 UI 元素的遮挡顺序与 z 坐标无关，主要由渲染顺序�
 
 从这个简单的例子可以看出，UGUI 的合并规则具有很大限制，某些简单的 UI 可能会产生大量的 DrawCall。在 UGUI 中，进行**重叠检测**和**分层合并**是非常有必要的，并不是说划分出一个新的 `Canvas` 就会产生额外的 DrawCall（比如第二张图中对左右两部分分别建立 Canvas 不会产生新的 DrawCall）。
 
-还需要注意的一点就是 UGUI 的 `Mask` 组件。该组件的实现方式是在模板缓冲中划出一片区域判断元素的显示与否，其本身就会占据一个 DrawCall。最关键的是，该组件还会导致原本可以合并的 DrawCall 被打断，造成性能浪费（比如往某个背包中的 Item 上加 Mask，那么这个 Item 就很可能无法与其他 Item 合并 DrawCall。
+还需要注意的一点就是 UGUI 的 `Mask` 组件，它会占据两个 DrawCall。该组件的实现方式是在底层模板缓冲根据 Image 传进来的 Alpha 值来进行区域裁剪，并在子 UI 元素绘制完毕后结束掉裁剪的计算。这种做法会导致 Mask 下的 UI 与 Mask 之外的 UI 无法进行合批。
+
+总结来说，UGUI 的合并规则可以用下面这张图概括：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/UGUI%E5%90%88%E6%89%B9%E8%A7%84%E5%88%99.png)
+
+在 Depth 的计算方法中，由于需要对所有 UI 元素进行遍历并将它们与已经计算过 Depth 的元素进行相交判断，因此 UGUI 使用了分组计算包围盒矩形的方法加速了计算。具体的来说，就是以 16 个元素为一组计算 Group Rect，判断相交时首先需要判断当前元素是否与 Group 相交，然后才会去挨个与 Group 中的元素进行计算。所以，当 UI 元素过多且层级过于复杂时，Batch 速度会严重下降。
 
 ?> 单就 DrawCall 合并而言，NGUI 比 UGUI 具有更大的优势。
 
