@@ -138,13 +138,21 @@ NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的�
 
 !> 对于 UGUI 而言，重叠是一个需要重视的问题，因为它是实实在在会影响 UI 性能的重要因素。
 
-## 网格更新方式
+## 网格重建
 
 ---
 
 在进行 UI 渲染前，会对网格进行更新重建。相比起增加 DrawCall 带来的开销，网格的更新重建才是 UI 性能问题的关键点。
 
-### 更新机制
+### NGUI与UGUI如何进行网格合并
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/04.png)
+
+NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会被合并到一个 Mesh 中。在上图中，血条和文本分别对应一个 DrawCall，在更新网格时并不会相互进行影响。
+
+反观 UGUI，它的网格的划分是依据 Canvas 进行的，同一个 Canvas 下的元素会被划分进一个 Mesh，因此血条和文本被合并成了一个 DrawCall。不过这样一来，当某个元素发生改变时，该界面对应的 Mesh 就需要进行更新。
+
+### 重建机制
 
 **NGUI**
 
@@ -152,13 +160,11 @@ NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的�
 
 **UGUI**
 
-使用 UGUI 需要分清楚 `Rebuild` 与 `ReBatch` 这两个概念。前者是指 UI 发生了改变需要进行更新，比如修改 UI 颜色就是在修改顶点颜色，所以更新其实就是在修改顶点属性（UIVertex）。至于后者，则指的是当 Canvas 中的 UI 发生改变时，Canvas 需要将 UI 元素的网格进行合并，然后送到 GPU 进行绘制。
+在 UGUI 中，网格重建分为 `Rebuild` 与 `ReBatch`。前者是指 UI 发生了改变需要进行更新，比如修改 UI 颜色就是在修改顶点颜色，所以更新其实就是在修改顶点属性（UIVertex）。至于后者，则指的是当 Canvas 中的 UI 发生改变时，Canvas 需要将整个界面的网格重新合并，然后送到 GPU 进行绘制。
 
-Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。之前在元素更新中有提到，UGUI 会根据 UI 元素的变化情况将它放到两个队列中，分为 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue`。
+有些项目在制作界面时，可能会只使用一个或很少的 Canvas。这种做法其实是很不好的，因为 UGUI 是以 Canvas 为单位进行网格绘制，一个 Canvas 就对应了一个 Mesh，当界面中的某个 UI 产生了变化时，Canvas 就必须要进行 ReBatch。这一部分带来的性能开销占掉了 UI 开销的大半，因此我们必须要想办法减少网格重建的频率和规模。
 
-LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、元素的关闭显示、节点层次结构发生改变（添加/删除等）。而 GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如大小、旋转、图片更改、文本变动等等。由于 UGUI 只会处理变动的元素，所以在优化时可以将动静元素进行分离，具体做法可以查看后面的内容。
-
-ReBatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI 元素发生变动时都会引发**整个** Canvas 的网格重建（哪怕只有一个元素改变了）。这里的变动指的是影响 UI 元素外观的改动，包括修改 `SpriteRenderer` 的图片、位置、缩放、文本等等。
+ReBatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI 元素发生变动时都会引发**整个界面**的网格重建（哪怕只有一个元素改变了）。这里的变动指的是影响 UI 元素外观的改动，包括修改 `SpriteRenderer` 的图片、位置、缩放、文本等等，所以如果界面里面存在一些经常改变的 UI，不妨尝试进行动静分离，限制 ReBatch 的范围。
 
 在 Unity 5.2 版本之后，网格合并的操作更多的是放到了子线程中，因而我们还需要关注其他的几个方法：
 
@@ -168,17 +174,11 @@ ReBatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI �
 
 `Canvas.BuildBatch` 放到子线程后，我们一般来说是看不到这个方法带来的开销。但是请注意，这两者并不是完全的并行关系，Unity 需要等待合并返回的结果，所以当网格重建过于频繁时仍然会带来性能问题。
 
+Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。在 `Canvas.BuildBatch` 中会计算出有哪些 UI 产生了修改，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。至于那些没有产生改变的 UI 则不会进行 Rebuild，因此 UGUI 处理静态界面时几乎没有开销。
+
+LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、元素的关闭显示、节点层次结构发生改变（添加/删除等）。GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如大小、旋转、图片更改、文本变动等等。
+
 ?> 注意，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。
-
-### NGUI与UGUI如何进行网格合并
-
-说了这么多，那么 UGUI 和 NGUI 在更新网格时有什么不同呢？请看下图：
-
-![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/04.png)
-
-NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会被合并到一个 Mesh 中。在上图中，血条和文本分别对应一个 DrawCall，在更新网格时并不会相互进行影响。
-
-反观 UGUI，它的网格的划分是依据 Canvas 进行的，同一个 Canvas 下的元素会被划分进一个 Mesh，因此血条和文本被合并成了一个 DrawCall。不过这样一来，当某个元素发生改变时，该界面对应的 Mesh 就需要进行更新。
 
 ### 对界面制作的影响
 
@@ -187,7 +187,7 @@ NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会
 * UGUI：拆分 Canvas；
 * NGUI：控制 FillAllDrawCalls；拆分 UIPanel。
 
-当你修改 UGUI 中某个 Canvas 的元素时，UGUI 会将整个 Canvas 的网格进行重建，因此一定要注意对 Canvas 的划分，否则某些简单但频繁地变动将影响整个界面的性能表现。虽说 Canvas 的增多将会导致 DrawCall 的增加，但对于复杂界面而言，划分 Canvas 有助于我们对界面进行显示/隐藏以及减少网格重建（比起多几个 DrawCall，网格重建的消耗要高得多）。至于如何进行 Canvas 的划分，可以参考下面的降低界面更新消耗的技巧。
+当你修改 UGUI 中某个 Canvas 的元素时，UGUI 会将整个 Canvas 的网格进行重建，因此一定要注意对 Canvas 的划分，否则某些简单但频繁地变动将影响整个界面的性能表现。虽说 Canvas 的增多将会导致 DrawCall 的增加，但对于复杂界面而言，划分 Canvas 有助于我们对界面进行显示/隐藏以及减少网格重建（比起多几个 DrawCall，网格重建的消耗要高得多）。至于如何进行 Canvas 的划分，可以参考后面的降低界面更新消耗的技巧。
 
 在 NGUI 里，我们可以通过一些巧妙的方式控制 Mesh 的更新，将影响范围控制在修改的元素所在的 Mesh 中。当然，这种做法的容错率其实比较低，很容易就会引发整个 Panel 的重建，所以不管对于 UGUI 还是 NGUI 都需要先对 Canvas 和 UIPanel 进行拆分，以提高容错率。
 
@@ -246,20 +246,22 @@ NGUI 造成 DrawCall 比较高的原因其实很少，也很好进行优化。�
 
 ### 减少OverDraw
 
-我们在制作 UI 时，经常会用到半透明的素材。由于所有的 UI 都是在透明度队列中由前往后进行渲染，而半透明的素材是不会进行深度写入的，因此这些透明 UI 会被多次绘制，并最终进行透明度混合产生透明的效果。
+所谓的 `OverDraw`，指的是半透明物体被多次进行绘制的问题。由于半透明物体需要关闭深度测试和深度写入，并且要开启透明度混合，也就是说哪怕我们绘制的是 `alpha=0` 的颜色，它也依旧会产生混合操作。显卡有一个叫做 `Fill Rate` 的参数，它代表了显卡每帧每秒能够绘制的像素数量。如果一帧当中有某个像素被多次进行了绘制，那么该像素占用的资源也就越多。
 
-减少 OverDraw 的方法如下：
+减少 `OverDraw` 的方法如下：
 
 * 减少 UI 层叠。
 * 遮挡场景时，关闭场景相机。
-* 不要用一张覆盖全屏的半透明 Image 来阻挡事件，可以自己写一个组件来进行事件遮挡。
+* 不要用一张不可见的 Image 来阻挡事件，可以自己写一个组件来进行事件遮挡。
 * 如果 Image 使用了九宫切图，那么可以尝试取消勾选 `Fill Center`。
+
+?> 在 Unity 的场景视图中可以切换至 `OverDraw` 选项来进行大致的评估，颜色越亮的地方代表多次绘制的问题越严重。
 
 ## 降低界面更新开销
 
 ---
 
-降低更新开销可以显著地提高游戏表现，并且还可以同时降低渲染开销。这里的更新对应的是之前讲过的网格更新重建机制。
+降低更新开销可以显著地提高游戏表现，并且还可以同时降低渲染开销。
 
 ### 动静分离
 
@@ -282,7 +284,7 @@ public void DettachCanvas(bool isSelected)
 }
 ```
 
-当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越小越好，我们得看实际的开销。因此，对于经常需要变动的元素，可以将它拆分出来，将动态元素引起的界面重构控制在一个很小的范围内。
+当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越小越好，我们得看实际的开销。相比较于多了几个 DrawCall 带来的消耗，ReBatch 往往才是性能的问题所在。
 
 ### 降低更新频率
 
