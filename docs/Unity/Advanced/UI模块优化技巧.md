@@ -246,11 +246,14 @@ NGUI 造成 DrawCall 比较高的原因其实很少，也很好进行优化。�
 
 ### 减少OverDraw
 
-OverDraw 主要有以下几个点要注意：
+我们在制作 UI 时，经常会用到半透明的素材。由于半透明的素材是不会进行深度写入的，因此它会被多次进行绘制，并最终进行颜色混合从而产生透明的效果。
 
-* 减少 UI 层叠
-* 遮挡场景时，关闭场景相机
-* 不用 Image 检测事件
+减少 OverDraw 的方法如下：
+
+* 减少 UI 层叠。
+* 遮挡场景时，关闭场景相机。
+* 不要用一张覆盖全屏的半透明 Image 来阻挡事件，可以自己写一个组件来进行事件遮挡。
+* 如果 Image 使用了九宫切图，那么可以尝试取消勾选 `Fill Center`。
 
 ## 降低界面更新开销
 
@@ -324,7 +327,7 @@ UIPanel 上有两个选项会影响网格的更新，分别是 `static` 和 `Vis
 影响 UGUI 网格更新的因素有很多，我们可以一个个看：
 
 * 尽量减少 UI 的数量和避免使用复杂的层级，这样做可以减少深度排序的时间。
-* 慎用 UI 元素的 enable 和 disable，它们会触发 Rebuild。替代的方式之一是对 UI 元素的 CanvasRenderer 或者 Canvas 组件进行开启和关闭。
+* 慎用 UI 元素的 enable 和 disable，它们会触发 Rebuild。可以用其他的隐藏方式进行替代，比如 CanvasGroup、Scale。
 * 尽量不要使用 Text 的 `Best Fit` 选项，它虽然可以自动调节字体大小从而避免超框，但 UGUI 会将该组件用到的所有字号全部都保存在 Atlas 中，导致占用空间变大。
 * Canvas 如果开启了 `Pixel Perfect` 选项，那么当 UI 的位置发生变化时，会导致 Layout Rebuild。比如在 ScrollRect 滚动时，会导致 Canvas.SendWillRenderCanvas 的消耗变高。
 * 对于不需要进行交互的 UI 组件，可以将它们的 `Raycast Target` 选项关掉，从而减轻点击事件带来的消耗。
