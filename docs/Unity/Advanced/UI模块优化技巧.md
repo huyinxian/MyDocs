@@ -176,7 +176,7 @@ ReBatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI �
 
 Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。在 `Canvas.BuildBatch` 中会计算出有哪些 UI 产生了修改，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。至于那些没有产生改变的 UI 则不会进行 Rebuild，因此 UGUI 处理静态界面时几乎没有开销。
 
-LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、元素的关闭显示、节点层次结构发生改变（添加/删除等）。GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如大小、旋转、图片更改、文本变动等等。
+LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、节点层次结构发生改变（添加/删除等）。GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如大小、旋转、图片更改、文本变动等等。
 
 ?> 注意，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。
 
