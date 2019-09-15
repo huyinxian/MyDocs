@@ -96,7 +96,7 @@ NGUI 中的 UI 元素的遮挡顺序与 z 坐标无关，主要由渲染顺序�
 
 **UGUI**
 
-相比于可以看得到源码的 NGUI，UGUI 内部会自动对 DrawCall 进行调整。UGUI 中是以 `Canvas` 为单位进行合并，但它并没有像 NGUI 那样设计一个 `Depth` 控制 DrawCall 的合并，它的合并顺序主要取决于 **Hierarchy** 视图中的节点顺序，排在越下面的元素渲染后就会越靠前。下面将用一个简单的例子来说明 UGUI 的合并规则。
+相比于可以看得到源码的 NGUI，UGUI 内部会自动对 DrawCall 进行调整。UGUI 中是以 `Canvas` 为单位进行合并，但它并没有像 NGUI 那公开出一个 `Depth` 值用于控制 DrawCall 的合并，它的合并顺序主要取决 UGUI 计算出来的 Depth（这个过程是自动的），并且根据 Depth、材质 ID、纹理 ID、UI 层级（在 Hierarchy 视图中的顺序）排成一个列表。UGUI 最终会对这个渲染列表进行合批操作，**在列表中位置相邻且材质、Shader、纹理相同的 UI 即可进行合批**。
 
 如下图所示，游戏中存在左右两个堆叠的界面，每种颜色都代表一种不同的图集，此时的 DrawCall 为 4。
 
