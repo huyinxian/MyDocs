@@ -128,7 +128,13 @@ NGUI 中的 UI 元素的遮挡顺序与 z 坐标无关，主要由渲染顺序�
 
 ### 调试工具
 
-NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的方式就是调整 UI 元素的 `Depth` 以减少 DrawCall。相比之下，UGUI 就只能使用 `Frame Debugger` 进行查看，并且我们能获取到的信息非常的少（你并不知道某些元素为什么没有进行合并）。所以对于 UGUI 来说，就必须按照其合并的原理来对界面进行评估，其优化难度要比 NGUI 大得多。
+NGUI 中可以使用其自带的 `DrawCall Tool` 进行调试优化，主要的方式就是调整 UI 元素的 `Depth` 以减少 DrawCall。UGUI 可以用 `Profiler` 和 `Frame Debugger` 来进行查看：
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/06.png)
+
+![](http://cdn.fantasticmiao.cn/image/post/Unity/Advanced/UI%E6%A8%A1%E5%9D%97%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/07.png)
+
+高版本 Unity 下的 Profiler 有一个 UI 模块的检测，可以清晰地查看有哪些 Mesh 生成了，并且还能看到合批被中断的原因。Frame Debugger 中则是可以查看 DrawCall 的渲染顺序，同时还能在游戏视图中看到每一步 DrawCall 的绘制过程。
 
 ### 对界面制作的影响
 
