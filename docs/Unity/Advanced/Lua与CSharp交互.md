@@ -60,7 +60,7 @@ public static void MoveRelative(int componentID, int x, int y, int z)
 }
 ```
 
-使用静态方法编写的 C# 代码将有更快的调用效率。将所有可能用到的 UIScrollView 的成员方法写成接口后，只需要把桥接类生成静态的 Wrap 文件，然后在 Lua 端也编写一个桥接类调用即可：
+**使用静态方法编写的 C# 代码将有更快的调用效率**。将所有可能用到的 UIScrollView 的成员方法写成接口后，只需要把桥接类生成静态的 Wrap 文件，然后在 Lua 端也编写一个桥接类调用即可：
 
 ```lua
 function UIScrollView.MoveRelative(id, data)
