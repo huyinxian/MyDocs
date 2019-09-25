@@ -339,3 +339,4 @@ UIPanel 上有两个选项会影响网格的更新，分别是 `static` 和 `Vis
 * 尽量不要使用 Text 的 `Best Fit` 选项，它虽然可以自动调节字体大小从而避免超框，但 UGUI 会将该组件用到的所有字号全部都保存在 Atlas 中，导致占用空间变大。
 * Canvas 如果开启了 `Pixel Perfect` 选项，那么当 UI 的位置发生变化时，会导致 Layout Rebuild。比如在 ScrollRect 滚动时，会导致 Canvas.SendWillRenderCanvas 的消耗变高。
 * 对于不需要进行交互的 UI 组件，可以将它们的 `Raycast Target` 选项关掉，从而减轻点击事件带来的消耗。
+* 如果打开的 UI 界面覆盖了全屏，那么可以把主相机关掉，只留一个 UI 相机。这样做的主要原因是 UI 界面没有参与游戏物体的深度剔除，所以哪怕游戏中的 UI 界面挡住了所有的物体，Unity 也依旧会对它们进行渲染。
