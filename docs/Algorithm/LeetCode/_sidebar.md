@@ -7,6 +7,7 @@
     * [栈和队列](Algorithm/LeetCode/栈和队列)
     * [数组和矩阵](Algorithm/LeetCode/数组和矩阵)
     * [哈希表](Algorithm/LeetCode/哈希表)
+    * [线段树](Algorithm/LeetCode/线段树)
 * **算法**
     * [排序](Algorithm/LeetCode/排序)
     * [贪心算法](Algorithm/LeetCode/贪心算法)
