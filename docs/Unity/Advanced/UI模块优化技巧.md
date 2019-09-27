@@ -293,7 +293,7 @@ public void DettachCanvas(bool isSelected)
 }
 ```
 
-当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越小越好，我们得看实际的开销。相比较于多了几个 DrawCall 带来的消耗，ReBatch 往往才是性能的问题所在。
+当然，你可能会说加个 Canvas 或者 UIPanel 会增加 DrawCall 的量，但问题是 DrawCall 并不是越少越好，我们得看实际的开销。相比较于多了几个 DrawCall 带来的消耗，由 UI 元素的修改引发的 DrawCall 重建才是性能问题的关键。
 
 ### 降低更新频率
 
