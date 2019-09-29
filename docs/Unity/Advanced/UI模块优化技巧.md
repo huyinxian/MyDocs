@@ -169,13 +169,11 @@ NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会
 
 **UGUI**
 
-在 UGUI 中，网格重建分为 `Rebuild` 与 `Rebatch`。前者是指 UI 发生了改变需要进行更新，比如修改 UI 颜色就是在修改顶点颜色，所以更新其实就是在修改顶点属性（UIVertex）。至于后者，则指的是当 Canvas 中的 UI 发生改变时，Canvas 需要将整个界面的网格重新合并，然后送到 GPU 进行绘制。
+在 UGUI 中，网格重建分为 `Rebuild` 与 `Rebatch`。前者是指 UI 的 `Layout` 和 `Graphic` 组件发生改变时需要重新计算网格，后者则是指 Canvas 中的 UI 发生修改时需要重新绘制整个界面的网格，并发送给 GPU 进行渲染。
 
-有些项目在制作界面时，可能会只使用一个或很少的 Canvas。这种做法其实是很不好的，因为 UGUI 是以 Canvas 为单位进行网格绘制，一个 Canvas 就对应了一个 Mesh，当界面中的某个 UI 产生了变化时，Canvas 就必须要进行 Rebatch。这一部分带来的性能开销占掉了 UI 开销的大半，因此我们必须要想办法减少网格重建的频率和规模。
+Rebatch 的标志性函数就是 `Canvas.BuildBatch`，计算 Batch 时需要按照深度进行排序，测试它们是否有重叠以及共同的材质等等。Canvas 会缓存上一次 Batch 的结果，直到 Canvas 发生修改时才会进行 Rebatch。
 
-Rebatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI 元素发生变动时都会引发**整个界面**的网格重建（哪怕只有一个元素改变了）。这里的变动指的是影响 UI 元素外观的改动，包括修改 `SpriteRenderer` 的图片、位置、缩放、文本等等，所以如果界面里面存在一些经常改变的 UI，不妨尝试进行动静分离，限制 Rebatch 的范围。
-
-在 Unity 5.2 版本之后，网格合并的操作更多的是放到了子线程中，因而我们还需要关注其他的几个方法：
+在 Unity 5.2 版本之后，网格合并的操作放到了子线程中，因而我们还需要关注其他的几个方法：
 
 * WaitingForJob
 * PutGeometryJobFence
@@ -183,7 +181,7 @@ Rebatch 的标志性函数就是 `Canvas.BuildBatch`，任意 Canvas 中的 UI �
 
 `Canvas.BuildBatch` 放到子线程后，我们一般来说是看不到这个方法带来的开销。但是请注意，这两者并不是完全的并行关系，Unity 需要等待合并返回的结果，所以当网格重建过于频繁时仍然会带来性能问题。
 
-Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。在 `Canvas.BuildBatch` 中会计算出有哪些 UI 产生了修改，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。至于那些没有产生改变的 UI 则不会进行 Rebuild，因此 UGUI 处理静态界面时几乎没有开销。
+Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。当 UI 发生修改时，该元素会被设置为 `Dirty`，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。Rebuild 的过程是在 `CanvasUpdateRegistry` 类中执行的，这里的细节就不具体讲了，有兴趣的可以去看 UGUI 源码赏析一章。
 
 LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、节点层次结构发生改变（添加/删除等）等等。由于 Layout 每次都会计算其子元素的大小和位置，所以这类布局组件能少用就少用，或者自行编写一种布局组件。
 
@@ -194,7 +192,7 @@ GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如�
 * Rebuild 是当 Graphic 发生变化时，重新计算自身或者被它所影响的其它子节点的 Mesh。
 * Rebatch 则是根据层级、遮挡关系、材质等因素，对修改过后的 Canvas 进行 DrawCall 合并，并送至 GPU 进行渲染。
 
-?> 注意，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。
+?> 注意，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。反过来也是如此。
 
 ### 对界面制作的影响
 
@@ -262,7 +260,9 @@ NGUI 造成 DrawCall 比较高的原因其实很少，也很好进行优化。�
 
 ### 减少OverDraw
 
-所谓的 `OverDraw`，指的是某个像素被多次进行绘制的问题。由于半透明物体需要关闭深度测试和深度写入，并且要开启透明度混合，也就是说哪怕我们绘制的是 `alpha=0` 的颜色，它也依旧会产生混合操作。显卡有一个叫做 `Fill Rate` 的参数，它代表了显卡每帧每秒能够绘制的像素数量。如果一帧当中有某个像素被多次进行了绘制，那么该像素占用的资源也就越多。
+所谓的 `OverDraw`，指的是半透明元素被多次进行绘制的问题。由于 Canvas 中的所有几何体都是在透明队列中进行绘制的，所以 UGUI 制作的界面始终伴随着透明度混合。由于关闭了深度测试和写入，所以当界面 UI 重叠时，就会出现同一个像素被多次绘制的问题。
+
+显卡有一个叫做 `Fill Rate` 的参数，它代表了显卡每帧每秒能够绘制的像素数量。如果一帧当中有某个像素被多次进行了绘制，那么该像素占用的资源也就越多。
 
 减少 `OverDraw` 的方法如下：
 
