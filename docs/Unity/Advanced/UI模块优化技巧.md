@@ -169,9 +169,11 @@ NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会
 
 **UGUI**
 
-了解 UGUI 的网格重建需要理解 `Rebuild` 与 `Rebatch` 这两个过程。前者是指 UI 的 `Layout` 和 `Graphic` 组件发生改变时需要重新计算网格，后者则是指 Canvas 中的 UI 发生修改时需要重新绘制整个界面的网格，并发送给 GPU 进行渲染。
+了解 UGUI 的网格重建需要理解 `Rebuild` 与 `Rebatch` 这两个过程。前者是指 `Graphic` 的布局和网格发生改变时需要重新计算，后者则是指 Canvas 中的 UI 发生修改时需要**重新绘制整个界面的网格**，并发送给 GPU 进行渲染。
 
-Rebatch 的标志性函数就是 `Canvas.BuildBatch`，计算 Batch 时需要按照深度进行排序，测试它们是否有重叠以及共同的材质等等。Canvas 会缓存上一次 Batch 的结果，直到 Canvas 发生修改时才会进行 Rebatch。
+先来说说 Rebatch，这一部分的标志性函数就是 `Canvas.BuildBatch`。计算 Batch 时需要按照深度进行排序，测试它们是否有重叠以及共同的材质等等。Canvas 会缓存上一次 Batch 的结果，直到 Canvas 发生修改时才会进行 Rebatch。
+
+这里要注意的是，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。反过来也是如此。
 
 在 Unity 5.2 版本之后，网格合并的操作放到了子线程中，因而我们还需要关注其他的几个方法：
 
@@ -181,7 +183,9 @@ Rebatch 的标志性函数就是 `Canvas.BuildBatch`，计算 Batch 时需要按
 
 `Canvas.BuildBatch` 放到子线程后，我们一般来说是看不到这个方法带来的开销。但是请注意，这两者并不是完全的并行关系，Unity 需要等待合并返回的结果，所以当网格重建过于频繁时仍然会带来性能问题。
 
-Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。当 UI 发生修改时，该元素会被设置为 `Dirty`，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。Rebuild 的过程是在 `CanvasUpdateRegistry` 类中执行的，这里的细节就不具体讲了，有兴趣的可以去看 UGUI 源码赏析一章。
+?> 合批的这一部分属于引擎底层的功能，性能开销其实还算好。
+
+Rebuild 的标志性函数是 `Canvas.SendWillRenderCanvases`，即对 UI 元素进行更新。当 UI 发生修改时，该元素会被设置为 `Dirty`，并且会根据变化的类型将它放到 `m_LayoutRebuildQueue` 和 `m_GraphicRebuildQueue` 中。UGUI 会在一帧中收集所有改变的元素，并统一进行更新修改。Rebuild 的过程是在 `CanvasUpdateRegistry` 类中执行的，具体的细节这里暂时不提。
 
 LayoutRebuild 引发的更新主要是因为元素位置（或者布局）发生了改变，比如常用的 `HorizontalLayoutGroup`、节点层次结构发生改变（添加/删除等）等等。由于 Layout 每次都会计算其子元素的大小和位置，所以这类布局组件能少用就少用，或者自行编写一种布局组件。
 
@@ -192,7 +196,7 @@ GraphicRebuild 引发的更新主要是元素的本身产生了改变，例如�
 * Rebuild 是当 Graphic 发生变化时，重新计算自身或者被它所影响的其它子节点的 Mesh。
 * Rebatch 则是根据层级、遮挡关系、材质等因素，对修改过后的 Canvas 进行 DrawCall 合并，并送至 GPU 进行渲染。
 
-?> 注意，Canvas 的网格是从 CanvasRender 组件获取的，如果存在嵌套 Canvas 的情况，那么子 Canvas 的网格并不会被包括进去，也就是说一次 Canvas 的 Batch 只会影响其子节点，不会影响其子 Canvas。反过来也是如此。
+?> 重建的流程可以在 UGUI 源码中查看，有兴趣的可以自行查看或者看看 UGUI 源码赏析一章。
 
 ### 对界面制作的影响
 
