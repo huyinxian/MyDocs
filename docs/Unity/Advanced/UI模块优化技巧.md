@@ -169,7 +169,7 @@ NGUI 在更新网格时是按照图集进行划分的，相同图集的元素会
 
 **UGUI**
 
-在 UGUI 中，网格重建分为 `Rebuild` 与 `Rebatch`。前者是指 UI 的 `Layout` 和 `Graphic` 组件发生改变时需要重新计算网格，后者则是指 Canvas 中的 UI 发生修改时需要重新绘制整个界面的网格，并发送给 GPU 进行渲染。
+了解 UGUI 的网格重建需要理解 `Rebuild` 与 `Rebatch` 这两个过程。前者是指 UI 的 `Layout` 和 `Graphic` 组件发生改变时需要重新计算网格，后者则是指 Canvas 中的 UI 发生修改时需要重新绘制整个界面的网格，并发送给 GPU 进行渲染。
 
 Rebatch 的标志性函数就是 `Canvas.BuildBatch`，计算 Batch 时需要按照深度进行排序，测试它们是否有重叠以及共同的材质等等。Canvas 会缓存上一次 Batch 的结果，直到 Canvas 发生修改时才会进行 Rebatch。
 
