@@ -20,6 +20,7 @@
     * [Lua基础](Unity/Advanced/Lua基础)
     * [ToLua基础示例](Unity/Advanced/ToLua基础示例)
     * [Lua与C#交互](Unity/Advanced/Lua与CSharp交互)
+    * [Lua与C#的高效数据交互](Unity/Advanced/Lua与CSharp的高效数据交互)
     * [ILRuntime热更新](Unity/Advanced/ILRuntime热更新)
 * **Shader**
     * [图形渲染基础](Unity/Advanced/图形渲染基础)
