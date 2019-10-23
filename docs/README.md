@@ -27,6 +27,7 @@
 - [ ] 读《Effective C#》
 - [ ] 读《C++ Primer》
 - [ ] 读《Lua程序设计》
+- [ ] 读《Lua设计与实现》
 - [ ] LeetCode、牛客网刷题
 - [ ] 研究 ToLua
 - [ ] 研究 XLua
