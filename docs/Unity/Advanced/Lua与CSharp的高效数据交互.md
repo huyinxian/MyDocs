@@ -261,7 +261,7 @@ Lua5.3 原生支持 int64，并且进一步区分了 32 位和 64 位版本。32
 
 LuaJit 的源码和 Lua 是不同的，如果项目使用的是 LuaJit，那么就需要对照着 LuaJit 的源码进行实现。
 
-除此之外，如果你要对本文的代码进行测试，那么就得自行编译一下相关的源码，然后将其放到 Plugins 下的对应目录：
+除此之外，如果你要对本文的代码进行测试，那么就得自行编译一下 Tolua 相关的源码（主要看你用的是哪种框架），然后将其放到 Plugins 下的对应目录：
 
 * Windows：`x86 -> tolua.dll` 和 `x86_64 -> tolua.dll`
 * MacOS/IOS：`tolua.bundle -> Contents -> MacOS -> tolua` 和 `iOS -> libtolua.a`
