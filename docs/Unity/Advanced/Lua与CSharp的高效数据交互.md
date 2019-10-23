@@ -261,7 +261,13 @@ Lua5.3 原生支持 int64，并且进一步区分了 32 位和 64 位版本。32
 
 LuaJit 的源码和 Lua 是不同的，如果项目使用的是 LuaJit，那么就需要对照着 LuaJit 的源码进行实现。
 
-除此之外，在 `Plugins` 的 `x86` 和 `x86_64` 目录下都有一个 `tolua.dll` 文件，分别对应 Luajit 编译后的 32 位和 64 位的源码。同样的，在 `tolua.bundle -> Contents -> MacOS` 下也有一个 `tolua` 文件，不过这个是 Lua5.1 编译的源码（因为 IOS 没法使用 JIT 技术）。如果你想要测试 Lua5.3，那么你就得自行升级 Lua 版本并且关掉 JIT 模式。
+除此之外，如果你要对本文的代码进行测试，那么就得自行编译一下相关的源码，然后将其放到 Plugins 下的对应目录：
+
+* Windows：`x86 -> tolua.dll` 和 `x86_64 -> tolua.dll`
+* MacOS/IOS：`tolua.bundle -> Contents -> MacOS -> tolua` 和 `iOS -> libtolua.a`
+* Android：`Android -> libs` 下会有 `x86`、`armeabi-v7a`、`arm64-v8a` 等几个目录，对应不同的 CPU 架构。目录下里面就会有 `libtolua.so` 文件。
+
+由于苹果相关平台不支持 JIT 技术，所以一般都是使用的 Lua5.1。在测试本文代码时，一定要看清楚自己的测试平台以及 Lua 版本。
 
 ## 应用场景
 
