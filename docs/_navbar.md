@@ -3,8 +3,6 @@
     * [项目进阶](Unity/Advanced/)
 * [**学习笔记**](StudyNote/CSharp/)
     * [LeetCode](StudyNote/LeetCode/)
-    * [编译原理](StudyNote/编译原理/)
-    * [计算机组成原理](StudyNote/计算机组成原理/)
 * [**链接**](https://github.com/huyinxian)
     * [GitHub](https://github.com/huyinxian)
     * [老博客](http://fantasticmiao.cn/)
