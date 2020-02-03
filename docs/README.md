@@ -20,24 +20,23 @@
 - [ ] 把以前收藏的渲染、游戏开发相关的文章看一遍
 - [ ] 读《Unity Shader入门精要》
 - [ ] 读《3D数学基础：图形与游戏开发》
-- [ ] 读《DX11龙书》
-- [ ] 读《OpenGL编程指南》
 - [ ] 读《游戏引擎架构》
 - [ ] 读《Real-Time-Rendering 3rd》
 - [ ] 读《Effective C#》
 - [ ] 读《C++ Primer》
 - [ ] 读《Lua程序设计》
 - [ ] 读《Lua设计与实现》
+- [ ] LearnOpenGL
 - [ ] LeetCode、牛客网刷题
 - [ ] 研究 ToLua
 - [ ] 研究 XLua
 - [ ] 了解 LuaJIT 以及 Unity 中的 Lua 优化
-- [ ] 学习 IL 语言，了解 IL2CPP
-- [ ] 研究 ECS 框架，并以此开发一个完整的仿东方 Project 游戏（参考收藏的文章和 CrazyStorm）
-- [ ] 做一个帧同步的 Demo
+- [ ] IL2CPP
+- [ ] DOTS
+- [ ] 帧同步
 - [ ] SDK 接入方案
-- [ ] 计算机组成原理
+- [x] 计算机组成原理
 - [ ] 计算机网络
 - [ ] 操作系统
 - [ ] 编译原理
-- [ ] 计算机网络
+- [ ] SRP、LWRP、HDRP
