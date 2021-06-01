@@ -8,8 +8,7 @@
 * 一个乐于分享的程序员
 
 [GitHub](https://github.com/huyinxian/)
-[Blog](http://blog.fantasticmiao.cn/)
-[Docs](README)
+[Docs](Unity/Notion/Notion笔记汇总)
 
 <!-- 背景图片 -->
 
